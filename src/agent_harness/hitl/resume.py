@@ -15,6 +15,20 @@ def approve_and_execute(harness: Harness, request_id: str) -> ToolResult:
     tool = harness.tools.get(request.action.tool)
     if tool is None:
         return ToolResult(success=False, error=f"Tool not found: {request.action.tool}")
+    if harness.scope:
+        scope_target = _scope_target(request.action.args or {})
+        if scope_target:
+            verdict = harness.scope.check(scope_target)
+            if verdict.decision != "inside":
+                return ToolResult(success=False, error=f"Action blocked by scope: {verdict.decision}")
 
     harness.hitl.approve(request_id)
     return tool.run(**(request.action.args or {}))
+
+
+def _scope_target(args: dict) -> str | None:
+    for key in ("path", "pattern"):
+        value = args.get(key)
+        if value:
+            return str(value)
+    return None

@@ -41,3 +41,27 @@ def test_approve_and_execute_rejects_unknown_request():
 
     assert result.success is False
     assert "not found" in result.error
+
+
+def test_approve_and_execute_rejects_outside_scope(tmp_path):
+    tool = RecordingTool()
+    registry = ToolRegistry()
+    registry.register(tool)
+    hitl = HITLManager()
+    outside = tmp_path / "outside.txt"
+    request = hitl.create_request(
+        AgentAction(type="call_tool", tool="write_file", args={"path": str(outside)}),
+        "review",
+    )
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    from agent_harness.governance.scope import ScopeGuard
+
+    harness = Harness(llm=None, tools=registry, hitl=hitl, scope=ScopeGuard(str(workspace)))
+
+    result = approve_and_execute(harness, request.id)
+
+    assert result.success is False
+    assert "scope" in result.error
+    assert request.status == "pending"
+    assert tool.calls == []

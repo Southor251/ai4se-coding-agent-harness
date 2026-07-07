@@ -38,7 +38,8 @@ def test_runtime_permission_ask_creates_hitl_request(tmp_path):
                     }
                 ]
             },
-        )
+        ),
+        hitl_store_path=str(tmp_path / "requests.json"),
     )
     harness.llm.responses = [
         LLMResponse(

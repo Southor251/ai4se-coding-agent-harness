@@ -232,7 +232,7 @@ Completed:
 
 Latest verification:
 
-- `python -m pytest -q` -> `124 passed`
+- `python -m pytest -q` -> `134 passed`
 - `python -m ruff check src/ tests/ demo/` -> `All checks passed!`
 
 Remaining follow-up:
@@ -246,5 +246,6 @@ Remaining follow-up:
 - Optional project memory writes append-only notes under `.harness/memory/project.md`.
 - `agent-harness run` accepts `--profile <path>` for project-specific overlays.
 - HITL pending requests can be approved and executed through a small resume API.
+- HITL requests persist to JSON and are manageable through `agent-harness hitl list|approve|deny`.
 - Build a richer trace replay UI.
 - Add personal-harness features after course delivery requirements are locked.

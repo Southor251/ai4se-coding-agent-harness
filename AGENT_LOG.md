@@ -97,6 +97,12 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Added public `HITLManager.find`.
   - Approved pending requests can execute their stored tool action.
 
+- current HITL CLI slice
+  - Added persistent `HITLStore`.
+  - `HITLManager` now loads and saves requests when a store is configured.
+  - Added `agent-harness hitl list|approve|deny`.
+  - `approve_and_execute` now checks scope before executing approved actions.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -108,7 +114,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `124 passed`
+- `134 passed`
 - `All checks passed!`
 
 ## Remaining Product Work

@@ -13,7 +13,7 @@ The current implementation focuses on deterministic orchestration around an inje
 - Governance checks for workspace scope, sensitive paths, permission deny, and permission ask.
 - Human-in-the-loop request objects for ask-mode decisions.
 - Runtime config can load permission rules and create HITL requests for ask-mode tool actions.
-- HITL pending requests can be approved and executed through `approve_and_execute`.
+- HITL pending requests persist to `.harness/hitl/requests.json` and can be listed, approved, or denied through `agent-harness hitl`.
 - Optional project memory stores append-only notes under `.harness/memory/project.md`.
 - Feedback classification from tool results and feedback injection into the next loop context.
 - JSONL trace recording and loading.
@@ -54,7 +54,7 @@ python -m ruff check src/ tests/ demo/
 
 The final sandbox verification for this recovery pass was:
 
-- `124 passed`
+- `134 passed`
 - `All checks passed!`
 
 ## Run Demos
@@ -75,6 +75,9 @@ agent-harness run "say done" --trace .harness/runs/latest.jsonl
 agent-harness run "say done" --profile config/personal-harness.yaml
 agent-harness demo
 agent-harness web --trace trace.jsonl
+agent-harness hitl list --store .harness/hitl/requests.json
+agent-harness hitl approve <request_id> --store .harness/hitl/requests.json
+agent-harness hitl deny <request_id> --store .harness/hitl/requests.json
 agent-harness credentials show
 agent-harness credentials update <secret>
 agent-harness credentials clear
