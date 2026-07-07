@@ -8,6 +8,7 @@ from agent_harness.governance.scope import ScopeGuard
 from agent_harness.llm.interface import LLMResponse
 from agent_harness.llm.mock import MockLLM
 from agent_harness.llm.openai import OpenAILLM
+from agent_harness.memory.project import ProjectMemory
 from agent_harness.models import AgentAction, PermissionRule
 from agent_harness.tools.builtin.edit_file import EditFileTool
 from agent_harness.tools.builtin.read_file import ReadFileTool
@@ -39,6 +40,7 @@ def build_harness(config: HarnessConfig, credential_manager=None, trace_path: st
         hitl=HITLManager(),
         feedback=FeedbackSensor(),
         trace=TraceStore(trace_path) if trace_path else None,
+        memory=_project_memory(config),
         max_steps=config.max_steps,
         config=config.model_dump(),
     )
@@ -68,3 +70,9 @@ def _permission_policy(config: HarnessConfig) -> PermissionPolicy | None:
             )
         )
     return policy
+
+
+def _project_memory(config: HarnessConfig) -> ProjectMemory | None:
+    if not config.memory.get("enabled", False):
+        return None
+    return ProjectMemory(config.workspace_root)

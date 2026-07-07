@@ -13,6 +13,7 @@ The current implementation focuses on deterministic orchestration around an inje
 - Governance checks for workspace scope, sensitive paths, permission deny, and permission ask.
 - Human-in-the-loop request objects for ask-mode decisions.
 - Runtime config can load permission rules and create HITL requests for ask-mode tool actions.
+- Optional project memory stores append-only notes under `.harness/memory/project.md`.
 - Feedback classification from tool results and feedback injection into the next loop context.
 - JSONL trace recording and loading.
 - Deterministic mechanism demos for guardrails, feedback recovery, and scope blocking.
@@ -52,7 +53,7 @@ python -m ruff check src/ tests/ demo/
 
 The final sandbox verification for this recovery pass was:
 
-- `117 passed`
+- `120 passed`
 - `All checks passed!`
 
 ## Run Demos

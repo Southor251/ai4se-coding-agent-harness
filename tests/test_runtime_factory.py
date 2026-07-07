@@ -88,3 +88,12 @@ def test_build_harness_loads_permission_rules_from_config():
     )
 
     assert verdict == "ask"
+
+
+def test_build_harness_can_enable_project_memory(tmp_path):
+    config = HarnessConfig(workspace_root=str(tmp_path), memory={"enabled": True})
+
+    harness = build_harness(config)
+    harness.memory.write("remember project")
+
+    assert harness.memory.read_all() == ["remember project"]

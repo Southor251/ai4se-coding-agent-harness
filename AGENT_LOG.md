@@ -83,6 +83,10 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Added `summarize_trace(records)`.
   - Theater now reports step, tool-call, denial, and feedback-event counts.
 
+- current project-memory slice
+  - Added `ProjectMemory` append-only markdown store.
+  - Runtime config can enable project memory with `memory.enabled`.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -94,7 +98,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `117 passed`
+- `120 passed`
 - `All checks passed!`
 
 ## Remaining Product Work
