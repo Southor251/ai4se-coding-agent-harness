@@ -1,6 +1,6 @@
 import os
-import json
 from openai import OpenAI
+from agent_harness.llm.action_protocol import action_protocol_prompt, parse_agent_action
 from agent_harness.llm.interface import LLMInterface, LLMResponse
 from agent_harness.models import AgentAction
 
@@ -35,6 +35,7 @@ class OpenAILLM(LLMInterface):
         if menu:
             tool_desc = "\n".join([f"- {t.get('name', '?')}: {t.get('description', '')}" for t in menu])
             messages.append({"role": "system", "content": f"Available tools:\n{tool_desc}"})
+        messages.append({"role": "system", "content": action_protocol_prompt(menu)})
         try:
             client = self._get_client()
             response = client.chat.completions.create(
@@ -43,28 +44,7 @@ class OpenAILLM(LLMInterface):
                 temperature=self.temperature,
             )
             text = response.choices[0].message.content or ""
-            action = self._parse_text_action(text)
+            action = parse_agent_action(text)
             return LLMResponse(text=text, action=action)
         except Exception as e:
             return LLMResponse(text=f"API error: {e}", action=AgentAction(type="done"))
-
-    def _parse_text_action(self, text: str) -> AgentAction:
-        fields = {}
-        for line in text.splitlines():
-            if ":" not in line:
-                continue
-            key, value = line.split(":", 1)
-            fields[key.strip().lower()] = value.strip()
-
-        if fields.get("action", "").lower() != "call_tool":
-            return AgentAction(type="done")
-
-        args = {}
-        if fields.get("args"):
-            try:
-                parsed_args = json.loads(fields["args"])
-                if isinstance(parsed_args, dict):
-                    args = parsed_args
-            except json.JSONDecodeError:
-                args = {}
-        return AgentAction(type="call_tool", tool=fields.get("tool"), args=args)

@@ -59,6 +59,11 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Added support for `model`, `base_url`, and `temperature`.
   - Verified no-key execution exits safely without network calls.
 
+- current action-protocol slice
+  - Added strict JSON action parsing in `agent_harness.llm.action_protocol`.
+  - OpenAI-compatible provider now instructs the model to emit one JSON action object.
+  - Invalid action output becomes an observable `invalid` action and is fed back into the loop for retry.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -70,7 +75,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `96 passed`
+- `108 passed`
 - `All checks passed!`
 
 ## Remaining Product Work

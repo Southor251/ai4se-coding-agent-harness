@@ -4,7 +4,7 @@ from typing import Literal
 
 @dataclass
 class AgentAction:
-    type: Literal["call_tool", "done", "take_note"]
+    type: Literal["call_tool", "done", "take_note", "invalid"]
     tool: str | None = None
     args: dict | None = None
     note: str | None = None

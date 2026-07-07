@@ -177,6 +177,20 @@ def agent_loop(goal: str, H: Harness) -> str:
                 response=response,
                 permission_verdict=permission_verdict,
             )
+        elif response.action.type == "invalid":
+            error = response.action.args.get("error", "Invalid action") if response.action.args else "Invalid action"
+            H.context.append(
+                {
+                    "role": "user",
+                    "content": f"Invalid action: {error}. Respond with a valid JSON action object.",
+                }
+            )
+            _record_trace(
+                H,
+                step=H.step,
+                response=response,
+                permission_verdict="deny",
+            )
     if H.halt_reason is None and H.step >= H.max_steps:
         H.halt_reason = "max_steps"
     if H.trace:

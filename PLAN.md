@@ -232,12 +232,12 @@ Completed:
 
 Latest verification:
 
-- `python -m pytest -q` -> `96 passed`
+- `python -m pytest -q` -> `108 passed`
 - `python -m ruff check src/ tests/ demo/` -> `All checks passed!`
 
 Remaining follow-up:
 
 - Implement real API-backed provider execution behind the working CLI runtime.
-- Next API milestone: replace text action parsing with a strict structured action protocol before trusting real task execution.
+- Strict structured action protocol is implemented. Next milestone: richer governed tool execution and HITL approval flow for real task work.
 - Build a richer trace replay UI.
 - Add personal-harness features after course delivery requirements are locked.

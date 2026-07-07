@@ -42,7 +42,7 @@ def test_openai_llm_no_key():
 
 
 class FakeOpenAIMessage:
-    content = 'action: call_tool\ntool: read_file\nargs: {"path": "README.md"}'
+    content = '{"type": "call_tool", "tool": "read_file", "args": {"path": "README.md"}}'
 
 
 class FakeOpenAIChoice:
@@ -50,16 +50,21 @@ class FakeOpenAIChoice:
 
 
 class FakeOpenAIResponse:
-    choices = [FakeOpenAIChoice()]
+    def __init__(self, text=None):
+        if text is not None:
+            self.choices = [type("Choice", (), {"message": type("Message", (), {"content": text})()})()]
+        else:
+            self.choices = [FakeOpenAIChoice()]
 
 
 class FakeCompletions:
     def __init__(self):
         self.last_kwargs = None
+        self.response_text = None
 
     def create(self, **kwargs):
         self.last_kwargs = kwargs
-        return FakeOpenAIResponse()
+        return FakeOpenAIResponse(self.response_text)
 
 
 class FakeChat:
@@ -72,7 +77,7 @@ class FakeClient:
         self.chat = FakeChat()
 
 
-def test_openai_llm_parses_text_tool_action():
+def test_openai_llm_parses_structured_tool_action():
     llm = OpenAILLM(api_key="test-key")
     client = FakeClient()
     llm._client = client
@@ -84,6 +89,18 @@ def test_openai_llm_parses_text_tool_action():
     assert result.action.args == {"path": "README.md"}
 
 
+def test_openai_llm_invalid_action_is_observable():
+    llm = OpenAILLM(api_key="test-key")
+    client = FakeClient()
+    client.chat.completions.response_text = "not json"
+    llm._client = client
+
+    result = llm.call([], [])
+
+    assert result.action.type == "invalid"
+    assert "valid JSON" in result.action.args["error"]
+
+
 def test_openai_llm_passes_model_and_temperature_to_client():
     llm = OpenAILLM(api_key="test-key", model="custom-model", temperature=0.2)
     client = FakeClient()
@@ -93,9 +110,9 @@ def test_openai_llm_passes_model_and_temperature_to_client():
 
     assert client.chat.completions.last_kwargs["model"] == "custom-model"
     assert client.chat.completions.last_kwargs["temperature"] == 0.2
-    assert client.chat.completions.last_kwargs["messages"] == [
-        {"role": "user", "content": "hello"}
-    ]
+    messages = client.chat.completions.last_kwargs["messages"]
+    assert messages[0] == {"role": "user", "content": "hello"}
+    assert "Respond with exactly one JSON object" in messages[-1]["content"]
 
 
 def test_openai_llm_builds_client_with_base_url():

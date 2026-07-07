@@ -19,7 +19,7 @@ The current implementation focuses on deterministic orchestration around an inje
 ## Known Limits
 
 - `agent-harness run`, `agent-harness demo`, and `agent-harness web` are minimal working local commands in this milestone. `run` uses the safe MockLLM runtime by default and can construct an OpenAI-compatible provider from config and credentials.
-- Real API-backed task execution is still limited by the current text action parser; the next milestone is a stricter structured action protocol.
+- Real API-backed task execution now uses a strict JSON action protocol. The next milestone is richer governed tool execution and HITL approval flow for real task work.
 - The shell tool is intentionally conservative in governed loop execution. With scope enabled and no explicit permission policy, `run_shell` is blocked by default.
 - This is not a complete OS sandbox. Scope and permission checks are harness-level guardrails.
 - Reflection content is scaffolded only; the student should complete `REFLECTION.md` personally.
@@ -50,7 +50,7 @@ python -m ruff check src/ tests/ demo/
 
 The final sandbox verification for this recovery pass was:
 
-- `96 passed`
+- `108 passed`
 - `All checks passed!`
 
 ## Run Demos
@@ -100,6 +100,22 @@ llm:
 ```
 
 If no key is configured, `agent-harness run --config <file>` exits safely with `API key not configured`.
+
+Model responses must be exactly one JSON object:
+
+```json
+{"type":"done"}
+```
+
+```json
+{"type":"take_note","note":"remember this"}
+```
+
+```json
+{"type":"call_tool","tool":"read_file","args":{"path":"README.md"}}
+```
+
+Invalid JSON or malformed actions are fed back into the loop as an invalid-action observation.
 
 ## Trace Theater
 
