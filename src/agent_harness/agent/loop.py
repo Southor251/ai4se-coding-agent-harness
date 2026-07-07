@@ -21,6 +21,38 @@ def agent_loop(goal: str, H: Harness) -> str:
             if H.tools and response.action.tool:
                 tool = H.tools.get(response.action.tool)
                 if tool:
+                    args = response.action.args or {}
+                    path = args.get("path")
+                    if H.scope and path:
+                        scope_verdict = H.scope.check(str(path))
+                        if scope_verdict.decision != "inside":
+                            H.context.append(
+                                {
+                                    "role": "user",
+                                    "content": f"Action blocked by scope: {scope_verdict.decision}",
+                                }
+                            )
+                            continue
+                    if H.permission:
+                        permission_verdict = H.permission.check(response.action)
+                        if permission_verdict == "deny":
+                            H.context.append(
+                                {
+                                    "role": "user",
+                                    "content": "Action blocked by permission policy",
+                                }
+                            )
+                            continue
+                        if permission_verdict == "ask":
+                            if H.hitl:
+                                H.hitl.create_request(response.action, "permission review required")
+                            H.context.append(
+                                {
+                                    "role": "user",
+                                    "content": "Action requires human approval",
+                                }
+                            )
+                            continue
                     result = tool.run(**(response.action.args or {}))
                     H.context.append(
                         {"role": "user", "content": str(result.output if result.success else result.error)}
