@@ -31,6 +31,14 @@ def _record_trace(
     )
 
 
+def _scope_target(args: dict) -> str | None:
+    for key in ("path", "pattern"):
+        value = args.get(key)
+        if value:
+            return str(value)
+    return None
+
+
 def agent_loop(goal: str, H: Harness) -> str:
     H.step = 0
     H.context = [{"role": "system", "content": H.system_prompt}]
@@ -78,9 +86,9 @@ def agent_loop(goal: str, H: Harness) -> str:
                             permission_verdict=permission_verdict,
                         )
                         continue
-                    path = args.get("path")
-                    if H.scope and path:
-                        scope_verdict = H.scope.check(str(path))
+                    scope_target = _scope_target(args)
+                    if H.scope and scope_target:
+                        scope_verdict = H.scope.check(scope_target)
                         if scope_verdict.decision != "inside":
                             permission_verdict = "deny"
                             H.context.append(

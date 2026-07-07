@@ -49,7 +49,7 @@ python -m ruff check src/ tests/ demo/
 
 The final sandbox verification for this recovery pass was:
 
-- `86 passed`
+- `88 passed`
 - `All checks passed!`
 
 ## Run Demos
@@ -122,4 +122,3 @@ python -m build
 - Sensitive path checks use neutral fixtures such as `.git` and `.env`.
 - Shell execution should be governed by explicit permission policy in any real integration.
 - API secrets should be stored through the credential manager or environment variables, never in source files.
-

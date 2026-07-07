@@ -232,7 +232,7 @@ Completed:
 
 Latest verification:
 
-- `python -m pytest -q` -> `86 passed`
+- `python -m pytest -q` -> `88 passed`
 - `python -m ruff check src/ tests/ demo/` -> `All checks passed!`
 
 Remaining follow-up:

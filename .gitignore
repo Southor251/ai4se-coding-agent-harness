@@ -1,7 +1,8 @@
 # Credentials
 .env
 *.key
-**/credentials/*
+.credentials/
+credentials.local/
 
 # Python
 __pycache__/

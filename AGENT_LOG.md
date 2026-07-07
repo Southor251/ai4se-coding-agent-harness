@@ -40,6 +40,14 @@ This log records the recovery work performed in the sandbox copy of the project.
 - `9ad6bda fix: harden governance and feedback loop`
   - Addressed code-review findings around sensitive path detection, missing workspace roots, loop step reuse, unknown tools, shell default policy, pytest return code handling, trace timestamps, and feedback demo truthfulness.
 
+- `70da24e docs: add delivery artifacts`
+  - Added README, AGENT_LOG, SPEC_PROCESS, Dockerfile, REFLECTION, and delivery Makefile/PLAN updates.
+
+- final review fix
+  - Restored the credential manager package to tracked source by narrowing the credential ignore rule.
+  - Added scope enforcement for `run_test(pattern=...)`.
+  - Added parsing for simple OpenAI text tool actions with `tool:` and JSON `args:`.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -51,7 +59,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `86 passed`
+- `88 passed`
 - `All checks passed!`
 
 ## Remaining Product Work
@@ -60,4 +68,3 @@ Observed result:
 - Replace the minimal Streamlit theater with a richer replay UI.
 - Add real provider configuration and model selection once target provider/version requirements are fixed.
 - Expand personal-harness features such as persistent project memory, patch planning, and richer tool permissions.
-

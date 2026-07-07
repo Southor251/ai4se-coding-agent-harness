@@ -30,6 +30,16 @@ class ShellLikeTool(ToolBase):
         return ToolResult(success=True, output="executed")
 
 
+class RunTestLikeTool(ToolBase):
+    def __init__(self):
+        super().__init__(name="run_test", description="test-like tool")
+        self.calls = []
+
+    def run(self, **kwargs) -> ToolResult:
+        self.calls.append(kwargs)
+        return ToolResult(success=True, output="executed")
+
+
 def registry_with(tool: ToolBase) -> ToolRegistry:
     registry = ToolRegistry()
     registry.register(tool)
@@ -221,3 +231,35 @@ def test_shell_tool_is_blocked_by_default_when_scope_is_enabled(tmp_path):
 
     assert tool.calls == []
     assert any("blocked by shell policy" in message["content"] for message in harness.context)
+
+
+def test_run_test_pattern_outside_scope_is_blocked(tmp_path):
+    workspace = tmp_path / "workspace"
+    outside = tmp_path / "outside"
+    workspace.mkdir()
+    outside.mkdir()
+    tool = RunTestLikeTool()
+    mock = MockLLM(
+        responses=[
+            LLMResponse(
+                text="run outside tests",
+                action=AgentAction(
+                    type="call_tool",
+                    tool="run_test",
+                    args={"pattern": str(outside)},
+                ),
+            ),
+            LLMResponse(text="done", action=AgentAction(type="done")),
+        ]
+    )
+    harness = Harness(
+        llm=mock,
+        tools=registry_with(tool),
+        scope=ScopeGuard(workspace_root=str(workspace)),
+        max_steps=5,
+    )
+
+    agent_loop("test", harness)
+
+    assert tool.calls == []
+    assert any("blocked by scope" in message["content"] for message in harness.context)

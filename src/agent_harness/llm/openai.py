@@ -1,4 +1,5 @@
 import os
+import json
 from openai import OpenAI
 from agent_harness.llm.interface import LLMInterface, LLMResponse
 from agent_harness.models import AgentAction
@@ -30,9 +31,28 @@ class OpenAILLM(LLMInterface):
                 temperature=0.7,
             )
             text = response.choices[0].message.content or ""
-            action = AgentAction(type="done")
-            if "action: call_tool" in text.lower():
-                action = AgentAction(type="call_tool")
+            action = self._parse_text_action(text)
             return LLMResponse(text=text, action=action)
         except Exception as e:
             return LLMResponse(text=f"API error: {e}", action=AgentAction(type="done"))
+
+    def _parse_text_action(self, text: str) -> AgentAction:
+        fields = {}
+        for line in text.splitlines():
+            if ":" not in line:
+                continue
+            key, value = line.split(":", 1)
+            fields[key.strip().lower()] = value.strip()
+
+        if fields.get("action", "").lower() != "call_tool":
+            return AgentAction(type="done")
+
+        args = {}
+        if fields.get("args"):
+            try:
+                parsed_args = json.loads(fields["args"])
+                if isinstance(parsed_args, dict):
+                    args = parsed_args
+            except json.JSONDecodeError:
+                args = {}
+        return AgentAction(type="call_tool", tool=fields.get("tool"), args=args)

@@ -39,3 +39,39 @@ def test_openai_llm_no_key():
     result = llm.call([], [])
     assert result.action.type == "done"
     assert "not configured" in result.text
+
+
+class FakeOpenAIMessage:
+    content = 'action: call_tool\ntool: read_file\nargs: {"path": "README.md"}'
+
+
+class FakeOpenAIChoice:
+    message = FakeOpenAIMessage()
+
+
+class FakeOpenAIResponse:
+    choices = [FakeOpenAIChoice()]
+
+
+class FakeCompletions:
+    def create(self, **kwargs):
+        return FakeOpenAIResponse()
+
+
+class FakeChat:
+    completions = FakeCompletions()
+
+
+class FakeClient:
+    chat = FakeChat()
+
+
+def test_openai_llm_parses_text_tool_action():
+    llm = OpenAILLM(api_key="test-key")
+    llm._client = FakeClient()
+
+    result = llm.call([], [{"name": "read_file", "description": "read"}])
+
+    assert result.action.type == "call_tool"
+    assert result.action.tool == "read_file"
+    assert result.action.args == {"path": "README.md"}

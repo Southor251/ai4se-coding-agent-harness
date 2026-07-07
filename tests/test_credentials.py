@@ -18,18 +18,18 @@ class FakeBackend:
 def test_credentials_status_hides_secret():
     backend = FakeBackend()
     manager = CredentialManager(backend=backend)
-    manager.update("sk-test-secret")
+    manager.update("sample-token")
 
     status = manager.show_status()
 
     assert "configured" in status
-    assert "sk-test-secret" not in status
+    assert "sample-token" not in status
 
 
 def test_credentials_clear_removes_secret():
     backend = FakeBackend()
     manager = CredentialManager(backend=backend)
-    manager.update("sk-test-secret")
+    manager.update("sample-token")
     manager.clear()
 
     assert manager.get() is None
