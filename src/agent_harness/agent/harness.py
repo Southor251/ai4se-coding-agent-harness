@@ -8,6 +8,8 @@ class Harness:
     llm: LLMInterface
     tools: Any = None
     permission: Any = None
+    scope: Any = None
+    hitl: Any = None
     feedback: Any = None
     trace: Any = None
     memory: Any = None
@@ -15,3 +17,5 @@ class Harness:
     system_prompt: str = "You are a coding agent."
     max_steps: int = 50
     step: int = 0
+    context: list[dict] = field(default_factory=list)
+    halt_reason: str | None = None

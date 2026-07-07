@@ -47,3 +47,20 @@ def test_workspace_escape_is_outside():
         outside_file.write_text("outside")
         verdict = guard.check(str(Path(workspace) / ".." / Path(outside).name / "outside.txt"))
         assert verdict.decision == "outside"
+
+
+def test_sibling_directory_with_same_prefix_is_outside():
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as parent:
+        workspace = Path(parent) / "work"
+        sibling = Path(parent) / "work-sibling"
+        workspace.mkdir()
+        sibling.mkdir()
+        sibling_file = sibling / "outside.txt"
+        sibling_file.write_text("outside")
+
+        guard = ScopeGuard(workspace_root=str(workspace))
+        verdict = guard.check(str(sibling_file))
+
+        assert verdict.decision == "outside"

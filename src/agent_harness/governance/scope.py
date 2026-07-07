@@ -11,7 +11,7 @@ SENSITIVE_PATTERNS = [
 
 class ScopeGuard:
     def __init__(self, workspace_root: str = "."):
-        self.workspace_root = str(Path(workspace_root).resolve())
+        self.workspace_root = Path(workspace_root).resolve()
 
     def check(self, path: str) -> ScopeVerdict:
         try:
@@ -20,21 +20,22 @@ class ScopeGuard:
             p = Path(path)
         normalized = str(p)
         posix_path = p.as_posix()
-        if normalized.startswith(self.workspace_root):
+        workspace_root = str(self.workspace_root)
+        if p == self.workspace_root or p.is_relative_to(self.workspace_root):
             for pattern in SENSITIVE_PATTERNS:
                 if pattern in normalized or pattern in posix_path:
                     return ScopeVerdict(
                         decision="sensitive",
                         normalized_path=normalized,
-                        workspace_root=self.workspace_root,
+                        workspace_root=workspace_root,
                     )
             return ScopeVerdict(
                 decision="inside",
                 normalized_path=normalized,
-                workspace_root=self.workspace_root,
+                workspace_root=workspace_root,
             )
         return ScopeVerdict(
             decision="outside",
             normalized_path=normalized,
-            workspace_root=self.workspace_root,
+            workspace_root=workspace_root,
         )

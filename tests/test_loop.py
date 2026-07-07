@@ -11,12 +11,23 @@ def test_harness_holds_llm():
     assert H.llm is mock
 
 
+def test_harness_tracks_context_and_halt_reason():
+    mock = MockLLM(responses=[])
+    H = Harness(llm=mock)
+    assert H.context == []
+    assert H.halt_reason is None
+    assert H.scope is None
+    assert H.hitl is None
+
+
 def test_agent_loop_immediate_done():
     mock = MockLLM(responses=[LLMResponse(text="ok", action=AgentAction(type="done"))])
     H = Harness(llm=mock, max_steps=10)
     answer = agent_loop("test", H)
     assert answer == "ok"
     assert H.step == 1
+    assert H.halt_reason == "done"
+    assert H.context[-1]["content"] == "ok"
 
 
 def test_agent_loop_multiple_steps():
