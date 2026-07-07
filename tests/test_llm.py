@@ -4,6 +4,9 @@ from agent_harness.llm.mock import MockLLM
 from agent_harness.models import AgentAction
 
 
+from agent_harness.llm.openai import OpenAILLM
+
+
 def test_cannot_instantiate_abstract():
     with pytest.raises(TypeError):
         LLMInterface()
@@ -29,3 +32,10 @@ def test_mock_llm_done_when_exhausted():
     mock = MockLLM(responses=[])
     result = mock.call([], [])
     assert result.action.type == "done"
+
+
+def test_openai_llm_no_key():
+    llm = OpenAILLM(api_key="")
+    result = llm.call([], [])
+    assert result.action.type == "done"
+    assert "not configured" in result.text
