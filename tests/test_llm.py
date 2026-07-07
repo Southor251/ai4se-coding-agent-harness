@@ -28,10 +28,10 @@ def test_mock_llm_consumes_queue():
     assert mock.call([], []).text == "second"
 
 
-def test_mock_llm_done_when_exhausted():
+def test_mock_llm_call_tool_when_exhausted():
     mock = MockLLM(responses=[])
     result = mock.call([], [])
-    assert result.action.type == "done"
+    assert result.action.type == "call_tool"
 
 
 def test_openai_llm_no_key():

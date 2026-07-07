@@ -9,7 +9,7 @@ class MockLLM(LLMInterface):
 
     def call(self, context: list[dict], menu: list[dict]) -> LLMResponse:
         if self.call_count >= len(self.responses):
-            return LLMResponse(text="", action=AgentAction(type="done"))
+            return LLMResponse(text="", action=AgentAction(type="call_tool"))
         response = self.responses[self.call_count]
         self.call_count += 1
         return response
