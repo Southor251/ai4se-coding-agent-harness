@@ -217,3 +217,26 @@ make web       # 启动 Agent Loop Theater
 3. **再重构**：改善代码质量，测试仍通过。
 4. **Critical issue 必须修复才能进入下一 task**。
 5. **每完成一个 task**：PLAN.md 标记完成 + 附 commit hash + AGENT_LOG.md 记录。
+# Recovery Status - 2026-07-07
+
+The sandbox recovery pass implemented the deterministic harness kernel described in `docs/superpowers/plans/2026-07-07-harness-recovery-and-kernel-redesign.md`.
+
+Completed:
+
+- Baseline dependency, CI, lint, and test recovery.
+- Governance integration for scope, permission, and HITL.
+- Feedback classification and loop context injection.
+- JSONL trace recording and deterministic mechanism demos.
+- Config loader, credential manager, CLI skeleton, plugin interfaces, and trace theater loader.
+- Delivery artifacts: `README.md`, `AGENT_LOG.md`, `SPEC_PROCESS.md`, `Dockerfile`, and `REFLECTION.md`.
+
+Latest verification:
+
+- `python -m pytest -q` -> `86 passed`
+- `python -m ruff check src/ tests/ demo/` -> `All checks passed!`
+
+Remaining follow-up:
+
+- Implement full behavior for `agent-harness run`, `agent-harness demo`, and `agent-harness web`.
+- Build a richer trace replay UI.
+- Add personal-harness features after course delivery requirements are locked.

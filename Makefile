@@ -1,10 +1,10 @@
 .PHONY: test lint clean web demo
 
 test:
-	pytest tests/ -v --tb=short
+	python -m pytest tests/ -v --tb=short
 
 lint:
-	ruff check src/ tests/
+	python -m ruff check src/ tests/ demo/
 
 clean:
 	rm -rf .harness/trace/
