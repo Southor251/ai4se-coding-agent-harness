@@ -20,6 +20,16 @@ class RecordingTool(ToolBase):
         return ToolResult(success=True, output="executed")
 
 
+class ShellLikeTool(ToolBase):
+    def __init__(self):
+        super().__init__(name="run_shell", description="shell-like test tool")
+        self.calls = []
+
+    def run(self, **kwargs) -> ToolResult:
+        self.calls.append(kwargs)
+        return ToolResult(success=True, output="executed")
+
+
 def registry_with(tool: ToolBase) -> ToolRegistry:
     registry = ToolRegistry()
     registry.register(tool)
@@ -164,3 +174,50 @@ def test_scope_allows_workspace_path_to_execute(tmp_path):
     agent_loop("test", harness)
 
     assert tool.calls == [{"path": str(target), "content": "content"}]
+
+
+def test_unknown_tool_records_feedback_and_trace(tmp_path):
+    from agent_harness.trace.store import TraceStore
+
+    trace_path = tmp_path / "trace.jsonl"
+    mock = MockLLM(
+        responses=[
+            LLMResponse(
+                text="unknown",
+                action=AgentAction(type="call_tool", tool="missing_tool", args={}),
+            ),
+            LLMResponse(text="done", action=AgentAction(type="done")),
+        ]
+    )
+    harness = Harness(llm=mock, tools=ToolRegistry(), trace=TraceStore(trace_path), max_steps=5)
+
+    agent_loop("test", harness)
+
+    assert any("Tool not found" in message["content"] for message in harness.context)
+    assert len(TraceStore.load(trace_path)) == 2
+
+
+def test_shell_tool_is_blocked_by_default_when_scope_is_enabled(tmp_path):
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    tool = ShellLikeTool()
+    mock = MockLLM(
+        responses=[
+            LLMResponse(
+                text="shell",
+                action=AgentAction(type="call_tool", tool="run_shell", args={"command": "safe-list"}),
+            ),
+            LLMResponse(text="done", action=AgentAction(type="done")),
+        ]
+    )
+    harness = Harness(
+        llm=mock,
+        tools=registry_with(tool),
+        scope=ScopeGuard(workspace_root=str(workspace)),
+        max_steps=5,
+    )
+
+    agent_loop("test", harness)
+
+    assert tool.calls == []
+    assert any("blocked by shell policy" in message["content"] for message in harness.context)

@@ -15,6 +15,7 @@ def test_feedback_demo_is_deterministic():
 
     assert result["status"] == "healed"
     assert result["feedback_category"] == "assertion"
+    assert result["attempts"] == 2
 
 
 def test_scope_demo_is_deterministic():

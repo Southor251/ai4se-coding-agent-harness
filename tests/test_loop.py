@@ -44,3 +44,17 @@ def test_agent_loop_max_steps():
     H = Harness(llm=mock, max_steps=3)
     agent_loop("test", H)
     assert H.step <= 3
+
+
+def test_agent_loop_resets_step_between_runs():
+    mock = MockLLM(
+        responses=[
+            LLMResponse(text="first", action=AgentAction(type="done")),
+            LLMResponse(text="second", action=AgentAction(type="done")),
+        ]
+    )
+    H = Harness(llm=mock, max_steps=3)
+
+    assert agent_loop("first goal", H) == "first"
+    assert agent_loop("second goal", H) == "second"
+    assert H.step == 1

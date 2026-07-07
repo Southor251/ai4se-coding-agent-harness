@@ -8,6 +8,7 @@ from agent_harness.tools.builtin.write_file import WriteFileTool
 from agent_harness.tools.builtin.edit_file import EditFileTool
 from agent_harness.tools.builtin.run_shell import RunShellTool
 from agent_harness.tools.builtin.run_test import RunTestTool
+from unittest.mock import patch
 
 
 class EchoTool(ToolBase):
@@ -104,3 +105,16 @@ def test_run_test():
     tool = RunTestTool()
     result = tool.run(pattern="tests/test_import.py")
     assert result.success
+
+
+def test_run_test_uses_return_code_for_success():
+    class Completed:
+        returncode = 1
+        stdout = "1 passed"
+        stderr = ""
+
+    tool = RunTestTool()
+    with patch("agent_harness.tools.builtin.run_test.subprocess.run", return_value=Completed()):
+        result = tool.run(pattern="tests/test_import.py")
+
+    assert not result.success

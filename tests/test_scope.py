@@ -38,6 +38,17 @@ def test_sensitive_path():
         assert verdict.decision == "sensitive"
 
 
+def test_sensitive_directory_itself():
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as workspace:
+        guard = ScopeGuard(workspace_root=workspace)
+        policy_dir = Path(workspace) / ".git"
+        policy_dir.mkdir()
+        verdict = guard.check(str(policy_dir))
+        assert verdict.decision == "sensitive"
+
+
 def test_workspace_escape_is_outside():
     import tempfile
 
@@ -64,3 +75,13 @@ def test_sibling_directory_with_same_prefix_is_outside():
         verdict = guard.check(str(sibling_file))
 
         assert verdict.decision == "outside"
+
+
+def test_missing_workspace_root_treats_paths_as_outside(tmp_path):
+    missing_root = tmp_path / "missing"
+    child = missing_root / "child.txt"
+    guard = ScopeGuard(workspace_root=str(missing_root))
+
+    verdict = guard.check(str(child))
+
+    assert verdict.decision == "outside"

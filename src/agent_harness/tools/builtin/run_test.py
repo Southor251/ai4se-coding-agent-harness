@@ -18,7 +18,7 @@ class RunTestTool(ToolBase):
                 timeout=60,
             )
             output = result.stdout + result.stderr
-            passed = "passed" in result.stdout and "failed" not in result.stdout
+            passed = result.returncode == 0
             return ToolResult(success=passed, output=output)
         except subprocess.TimeoutExpired:
             return ToolResult(success=False, error="Test timed out")

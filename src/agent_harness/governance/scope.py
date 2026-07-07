@@ -3,10 +3,10 @@
 from pathlib import Path
 from agent_harness.models import ScopeVerdict
 
-SENSITIVE_PATTERNS = [
-    ".git/",
+SENSITIVE_NAMES = {
+    ".git",
     ".env",
-]
+}
 
 
 class ScopeGuard:
@@ -19,11 +19,17 @@ class ScopeGuard:
         except Exception:
             p = Path(path)
         normalized = str(p)
-        posix_path = p.as_posix()
         workspace_root = str(self.workspace_root)
+        if not self.workspace_root.exists():
+            return ScopeVerdict(
+                decision="outside",
+                normalized_path=normalized,
+                workspace_root=workspace_root,
+            )
         if p == self.workspace_root or p.is_relative_to(self.workspace_root):
-            for pattern in SENSITIVE_PATTERNS:
-                if pattern in normalized or pattern in posix_path:
+            relative_parts = p.relative_to(self.workspace_root).parts
+            for part in relative_parts:
+                if part in SENSITIVE_NAMES:
                     return ScopeVerdict(
                         decision="sensitive",
                         normalized_path=normalized,
