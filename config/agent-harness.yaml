@@ -1,0 +1,6 @@
+max_steps: 50
+workspace_root: "."
+llm:
+  provider: mock
+feedback:
+  max_retries: 3
