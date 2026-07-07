@@ -52,7 +52,7 @@ python -m ruff check src/ tests/ demo/
 
 The final sandbox verification for this recovery pass was:
 
-- `114 passed`
+- `115 passed`
 - `All checks passed!`
 
 ## Run Demos
@@ -69,7 +69,7 @@ The demos use `MockLLM`; they do not require an API key.
 
 ```bash
 agent-harness --help
-agent-harness run "say done"
+agent-harness run "say done" --trace .harness/runs/latest.jsonl
 agent-harness demo
 agent-harness web --trace trace.jsonl
 agent-harness credentials show
@@ -126,6 +126,8 @@ Trace loading is implemented in `agent_harness.web.theater.load_trace_for_displa
 ```bash
 streamlit run src/agent_harness/web/theater.py
 ```
+
+`agent-harness run` writes a JSONL trace to `.harness/runs/latest.jsonl` by default. Pass `--trace <path>` to choose a different run record.
 
 ## Docker
 

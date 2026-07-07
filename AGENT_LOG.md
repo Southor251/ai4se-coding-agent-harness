@@ -74,6 +74,11 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Runtime factory now creates a `HITLManager`.
   - Ask-mode write actions create pending HITL requests and do not execute by default.
 
+- current run-record slice
+  - `agent-harness run` now writes trace JSONL through `TraceStore`.
+  - `RunResult.trace_path` is populated.
+  - CLI accepts `--trace <path>` and defaults to `.harness/runs/latest.jsonl`.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -85,7 +90,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `114 passed`
+- `115 passed`
 - `All checks passed!`
 
 ## Remaining Product Work

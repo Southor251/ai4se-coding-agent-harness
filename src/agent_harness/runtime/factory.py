@@ -14,9 +14,10 @@ from agent_harness.tools.builtin.read_file import ReadFileTool
 from agent_harness.tools.builtin.run_test import RunTestTool
 from agent_harness.tools.builtin.write_file import WriteFileTool
 from agent_harness.tools.registry import ToolRegistry
+from agent_harness.trace.store import TraceStore
 
 
-def build_harness(config: HarnessConfig, credential_manager=None) -> Harness:
+def build_harness(config: HarnessConfig, credential_manager=None, trace_path: str | None = None) -> Harness:
     llm_provider = config.llm.get("provider", "mock")
     if llm_provider == "mock":
         llm = MockLLM([LLMResponse("done", AgentAction(type="done"))])
@@ -37,6 +38,7 @@ def build_harness(config: HarnessConfig, credential_manager=None) -> Harness:
         scope=ScopeGuard(config.workspace_root),
         hitl=HITLManager(),
         feedback=FeedbackSensor(),
+        trace=TraceStore(trace_path) if trace_path else None,
         max_steps=config.max_steps,
         config=config.model_dump(),
     )
