@@ -38,6 +38,9 @@ class HITLManager:
             req.resolved_at = time.time()
         return req
 
+    def find(self, req_id: str) -> HITLRequest | None:
+        return self._find(req_id)
+
     def check_timeout(self, req: HITLRequest) -> bool:
         if req.status == "pending" and (time.time() - req.created_at) > self.timeout:
             req.status = "timed_out"

@@ -92,6 +92,11 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Added `agent-harness run --profile <path>`.
   - Added `config/personal-harness.yaml` as a safe starter profile.
 
+- current HITL-resume slice
+  - Added `approve_and_execute(harness, request_id)`.
+  - Added public `HITLManager.find`.
+  - Approved pending requests can execute their stored tool action.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -103,7 +108,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `122 passed`
+- `124 passed`
 - `All checks passed!`
 
 ## Remaining Product Work
