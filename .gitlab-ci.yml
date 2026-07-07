@@ -1,0 +1,8 @@
+unit-test:
+  script:
+    - pip install -e .
+    - pip install ruff
+    - make test
+    - make lint
+  tags:
+    - python
