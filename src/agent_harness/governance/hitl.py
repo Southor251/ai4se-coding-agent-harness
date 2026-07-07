@@ -7,9 +7,10 @@ from agent_harness.models import AgentAction, HITLRequest
 
 
 class HITLManager:
-    def __init__(self, timeout: float = 30.0):
+    def __init__(self, timeout: float = 30.0, store=None):
         self.timeout = timeout
-        self.requests: list[HITLRequest] = []
+        self.store = store
+        self.requests: list[HITLRequest] = store.load() if store else []
 
     def create_request(self, action: AgentAction, reason: str) -> HITLRequest:
         req = HITLRequest(
@@ -20,6 +21,7 @@ class HITLManager:
             created_at=time.time(),
         )
         self.requests.append(req)
+        self._save()
         return req
 
     def approve(self, req_id: str) -> HITLRequest | None:
@@ -28,6 +30,7 @@ class HITLManager:
             req.status = "approved"
             req.decided_by = "human"
             req.resolved_at = time.time()
+            self._save()
         return req
 
     def deny(self, req_id: str) -> HITLRequest | None:
@@ -36,6 +39,7 @@ class HITLManager:
             req.status = "denied"
             req.decided_by = "human"
             req.resolved_at = time.time()
+            self._save()
         return req
 
     def find(self, req_id: str) -> HITLRequest | None:
@@ -46,8 +50,13 @@ class HITLManager:
             req.status = "timed_out"
             req.decided_by = "timeout"
             req.resolved_at = time.time()
+            self._save()
             return True
         return False
 
     def _find(self, req_id: str) -> HITLRequest | None:
         return next((r for r in self.requests if r.id == req_id), None)
+
+    def _save(self) -> None:
+        if self.store:
+            self.store.save(self.requests)

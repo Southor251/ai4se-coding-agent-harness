@@ -5,6 +5,7 @@ from agent_harness.feedback.sensor import FeedbackSensor
 from agent_harness.governance.hitl import HITLManager
 from agent_harness.governance.permission import PermissionPolicy
 from agent_harness.governance.scope import ScopeGuard
+from agent_harness.hitl.store import HITLStore
 from agent_harness.llm.interface import LLMResponse
 from agent_harness.llm.mock import MockLLM
 from agent_harness.llm.openai import OpenAILLM
@@ -18,7 +19,15 @@ from agent_harness.tools.registry import ToolRegistry
 from agent_harness.trace.store import TraceStore
 
 
-def build_harness(config: HarnessConfig, credential_manager=None, trace_path: str | None = None) -> Harness:
+DEFAULT_HITL_STORE_PATH = ".harness/hitl/requests.json"
+
+
+def build_harness(
+    config: HarnessConfig,
+    credential_manager=None,
+    trace_path: str | None = None,
+    hitl_store_path: str | None = DEFAULT_HITL_STORE_PATH,
+) -> Harness:
     llm_provider = config.llm.get("provider", "mock")
     if llm_provider == "mock":
         llm = MockLLM([LLMResponse("done", AgentAction(type="done"))])
@@ -37,7 +46,7 @@ def build_harness(config: HarnessConfig, credential_manager=None, trace_path: st
         tools=_default_safe_tools(),
         permission=_permission_policy(config),
         scope=ScopeGuard(config.workspace_root),
-        hitl=HITLManager(),
+        hitl=HITLManager(store=HITLStore(hitl_store_path)) if hitl_store_path else HITLManager(),
         feedback=FeedbackSensor(),
         trace=TraceStore(trace_path) if trace_path else None,
         memory=_project_memory(config),
