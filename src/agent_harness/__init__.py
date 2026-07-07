@@ -1,0 +1,1 @@
+"""A teaching-demo Coding Agent Harness."""
