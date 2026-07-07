@@ -47,3 +47,21 @@ def test_build_harness_supports_openai_provider_from_credentials():
     assert harness.llm.model == "custom-model"
     assert harness.llm.base_url == "https://example.test/v1"
     assert harness.llm.temperature == 0.2
+
+
+def test_build_harness_registers_default_safe_tools():
+    harness = build_harness(HarnessConfig())
+
+    tool_names = {tool.name for tool in harness.tools.list()}
+
+    assert {"read_file", "write_file", "edit_file", "run_test"}.issubset(tool_names)
+    assert "run_shell" not in tool_names
+
+
+def test_build_harness_adds_scope_and_feedback(tmp_path):
+    config = HarnessConfig(workspace_root=str(tmp_path))
+
+    harness = build_harness(config)
+
+    assert harness.scope.check(str(tmp_path)).decision == "inside"
+    assert harness.feedback is not None

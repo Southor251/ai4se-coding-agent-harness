@@ -9,6 +9,7 @@ The current implementation focuses on deterministic orchestration around an inje
 - Package import and editable install through `pyproject.toml`.
 - Deterministic agent loop with `done`, `call_tool`, and `take_note` actions.
 - Built-in tools for reading, writing, editing files, running shell commands, and running tests.
+- Runtime factory registers safe default tools: `read_file`, `write_file`, `edit_file`, and `run_test`. `run_shell` is not registered by default.
 - Governance checks for workspace scope, sensitive paths, permission deny, and permission ask.
 - Human-in-the-loop request objects for ask-mode decisions.
 - Feedback classification from tool results and feedback injection into the next loop context.
@@ -50,7 +51,7 @@ python -m ruff check src/ tests/ demo/
 
 The final sandbox verification for this recovery pass was:
 
-- `108 passed`
+- `111 passed`
 - `All checks passed!`
 
 ## Run Demos

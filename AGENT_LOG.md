@@ -64,6 +64,11 @@ This log records the recovery work performed in the sandbox copy of the project.
   - OpenAI-compatible provider now instructs the model to emit one JSON action object.
   - Invalid action output becomes an observable `invalid` action and is fed back into the loop for retry.
 
+- current runtime-tooling slice
+  - Runtime factory now registers safe default tools: `read_file`, `write_file`, `edit_file`, and `run_test`.
+  - Runtime factory now adds `ScopeGuard` and `FeedbackSensor`.
+  - `run_shell` remains excluded from default runtime registration.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -75,7 +80,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `108 passed`
+- `111 passed`
 - `All checks passed!`
 
 ## Remaining Product Work
