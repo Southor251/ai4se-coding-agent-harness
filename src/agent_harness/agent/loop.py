@@ -54,9 +54,14 @@ def agent_loop(goal: str, H: Harness) -> str:
                             )
                             continue
                     result = tool.run(**(response.action.args or {}))
-                    H.context.append(
-                        {"role": "user", "content": str(result.output if result.success else result.error)}
-                    )
+                    observation = str(result.output if result.success else result.error)
+                    H.context.append({"role": "user", "content": observation})
+                    if H.feedback:
+                        feedback = H.feedback.from_tool_result(result)
+                        H.feedback_events.append(feedback)
+                        H.context.append(
+                            {"role": "user", "content": H.feedback.format_for_context(feedback)}
+                        )
         elif response.action.type == "take_note":
             if H.memory and response.action.note:
                 H.memory.write(response.action.note)

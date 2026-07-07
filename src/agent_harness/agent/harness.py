@@ -18,4 +18,5 @@ class Harness:
     max_steps: int = 50
     step: int = 0
     context: list[dict] = field(default_factory=list)
+    feedback_events: list[Any] = field(default_factory=list)
     halt_reason: str | None = None
