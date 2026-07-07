@@ -17,18 +17,33 @@ def test_inside_workspace():
 
 
 def test_outside_workspace():
-    guard = ScopeGuard(workspace_root="/workspace")
-    verdict = guard.check("/etc/passwd")
-    assert verdict.decision == "outside"
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as workspace, tempfile.TemporaryDirectory() as outside:
+        guard = ScopeGuard(workspace_root=workspace)
+        outside_file = Path(outside) / "outside.txt"
+        outside_file.write_text("outside")
+        verdict = guard.check(str(outside_file))
+        assert verdict.decision == "outside"
 
 
 def test_sensitive_path():
-    guard = ScopeGuard(workspace_root="/workspace")
-    verdict = guard.check("/workspace/.git/config")
-    assert verdict.decision == "sensitive"
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as workspace:
+        guard = ScopeGuard(workspace_root=workspace)
+        policy_file = Path(workspace) / ".env"
+        policy_file.write_text("placeholder")
+        verdict = guard.check(str(policy_file))
+        assert verdict.decision == "sensitive"
 
 
-def test_sensitive_etc():
-    guard = ScopeGuard(workspace_root="/workspace")
-    verdict = guard.check("/workspace/../etc/passwd")
-    assert verdict.decision in ("outside", "sensitive")
+def test_workspace_escape_is_outside():
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as workspace, tempfile.TemporaryDirectory() as outside:
+        guard = ScopeGuard(workspace_root=workspace)
+        outside_file = Path(outside) / "outside.txt"
+        outside_file.write_text("outside")
+        verdict = guard.check(str(Path(workspace) / ".." / Path(outside).name / "outside.txt"))
+        assert verdict.decision == "outside"

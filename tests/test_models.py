@@ -35,15 +35,30 @@ def test_feedback():
 
 
 def test_hitl_request():
-    req = HITLRequest(id="1", action=AgentAction(type="call_tool", tool="rm"), reason="dangerous", status="pending", created_at=100.0)
+    req = HITLRequest(
+        id="1",
+        action=AgentAction(type="call_tool", tool="blocked_fixture"),
+        reason="requires review",
+        status="pending",
+        created_at=100.0,
+    )
     assert req.status == "pending"
 
 
 def test_permission_rule():
-    rule = PermissionRule(name="deny rm", pattern="rm -rf", verdict="deny", rule_type="command")
+    rule = PermissionRule(
+        name="deny blocked fixture",
+        pattern="blocked-command",
+        verdict="deny",
+        rule_type="command",
+    )
     assert rule.verdict == "deny"
 
 
 def test_scope_verdict():
-    v = ScopeVerdict(decision="outside", normalized_path="/etc/passwd", workspace_root="/workspace")
+    v = ScopeVerdict(
+        decision="outside",
+        normalized_path="/outside/file.txt",
+        workspace_root="/workspace",
+    )
     assert v.decision == "outside"

@@ -24,12 +24,12 @@ def test_agent_loop_multiple_steps():
     r2 = LLMResponse(text="done", action=AgentAction(type="done"))
     mock = MockLLM(responses=[r1, r2])
     H = Harness(llm=mock, max_steps=10)
-    answer = agent_loop("test", H)
+    agent_loop("test", H)
     assert H.step == 2
 
 
 def test_agent_loop_max_steps():
     mock = MockLLM(responses=[])
     H = Harness(llm=mock, max_steps=3)
-    answer = agent_loop("test", H)
+    agent_loop("test", H)
     assert H.step <= 3

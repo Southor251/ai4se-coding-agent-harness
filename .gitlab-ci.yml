@@ -1,7 +1,6 @@
 unit-test:
   script:
-    - pip install -e .
-    - pip install ruff
+    - pip install -e ".[dev]"
     - make test
     - make lint
   tags:

@@ -2,4 +2,4 @@ import agent_harness
 
 
 def test_import():
-    assert True
+    assert agent_harness is not None

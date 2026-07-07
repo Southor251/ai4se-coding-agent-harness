@@ -1,5 +1,4 @@
 from agent_harness.agent.harness import Harness
-from agent_harness.models import AgentAction, TraceRecord
 
 
 def agent_loop(goal: str, H: Harness) -> str:
