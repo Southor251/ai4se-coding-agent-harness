@@ -1,6 +1,13 @@
 from agent_harness.tools.base import ToolBase
 from agent_harness.tools.registry import ToolRegistry
 from agent_harness.models import ToolResult
+import tempfile
+from pathlib import Path
+from agent_harness.tools.builtin.read_file import ReadFileTool
+from agent_harness.tools.builtin.write_file import WriteFileTool
+from agent_harness.tools.builtin.edit_file import EditFileTool
+from agent_harness.tools.builtin.run_shell import RunShellTool
+from agent_harness.tools.builtin.run_test import RunTestTool
 
 
 class EchoTool(ToolBase):
@@ -37,3 +44,63 @@ def test_tool_run():
     result = t.run(msg="hello")
     assert result.success
     assert result.output == "hello"
+
+
+def test_read_file_success():
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".txt", delete=False, encoding="utf-8") as f:
+        f.write("hello")
+        path = f.name
+    tool = ReadFileTool()
+    result = tool.run(path=path)
+    assert result.success
+    assert "hello" in result.output
+
+
+def test_read_file_not_found():
+    tool = ReadFileTool()
+    result = tool.run(path="/nonexistent/file.txt")
+    assert not result.success
+
+
+def test_write_file():
+    with tempfile.TemporaryDirectory() as tmp:
+        path = str(Path(tmp) / "test.txt")
+        tool = WriteFileTool()
+        result = tool.run(path=path, content="hello world")
+        assert result.success
+        assert Path(path).read_text() == "hello world"
+
+
+def test_edit_file():
+    with tempfile.TemporaryDirectory() as tmp:
+        path = str(Path(tmp) / "test.txt")
+        Path(path).write_text("old content")
+        tool = EditFileTool()
+        result = tool.run(path=path, old="old", new="new")
+        assert result.success
+        assert "new content" in Path(path).read_text()
+
+
+def test_edit_file_not_found():
+    tool = EditFileTool()
+    result = tool.run(path="/nonexistent", old="x", new="y")
+    assert not result.success
+
+
+def test_run_shell_echo():
+    tool = RunShellTool()
+    result = tool.run(command="echo hello")
+    assert result.success
+    assert "hello" in result.output
+
+
+def test_run_shell_fail():
+    tool = RunShellTool()
+    result = tool.run(command="exit 1")
+    assert not result.success
+
+
+def test_run_test():
+    tool = RunTestTool()
+    result = tool.run(pattern="tests/test_import.py")
+    assert result.success
