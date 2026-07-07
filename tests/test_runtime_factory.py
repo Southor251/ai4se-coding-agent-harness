@@ -1,6 +1,7 @@
 from agent_harness.agent.harness import Harness
 from agent_harness.config.loader import HarnessConfig
 from agent_harness.llm.openai import OpenAILLM
+from agent_harness.models import AgentAction
 from agent_harness.runtime.factory import build_harness
 from agent_harness.runtime.result import RunResult
 
@@ -65,3 +66,25 @@ def test_build_harness_adds_scope_and_feedback(tmp_path):
 
     assert harness.scope.check(str(tmp_path)).decision == "inside"
     assert harness.feedback is not None
+
+
+def test_build_harness_loads_permission_rules_from_config():
+    config = HarnessConfig(
+        permission={
+            "rules": [
+                {
+                    "name": "ask writes",
+                    "pattern": ".*",
+                    "verdict": "ask",
+                    "rule_type": "path",
+                }
+            ]
+        }
+    )
+
+    harness = build_harness(config)
+    verdict = harness.permission.check(
+        AgentAction(type="call_tool", tool="write_file", args={"path": "README.md"})
+    )
+
+    assert verdict == "ask"

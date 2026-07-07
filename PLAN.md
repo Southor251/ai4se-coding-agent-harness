@@ -232,7 +232,7 @@ Completed:
 
 Latest verification:
 
-- `python -m pytest -q` -> `111 passed`
+- `python -m pytest -q` -> `114 passed`
 - `python -m ruff check src/ tests/ demo/` -> `All checks passed!`
 
 Remaining follow-up:
@@ -240,5 +240,6 @@ Remaining follow-up:
 - Implement real API-backed provider execution behind the working CLI runtime.
 - Strict structured action protocol is implemented. Next milestone: richer governed tool execution and HITL approval flow for real task work.
 - Runtime factory now registers safe default tools under scope and feedback; shell remains excluded by default.
+- Runtime factory now loads permission rules and creates HITL requests for ask-mode actions.
 - Build a richer trace replay UI.
 - Add personal-harness features after course delivery requirements are locked.

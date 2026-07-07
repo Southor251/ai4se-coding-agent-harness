@@ -20,3 +20,39 @@ def test_runtime_harness_can_read_scoped_file(tmp_path):
     agent_loop("read note", harness)
 
     assert any(message["content"] == "hello" for message in harness.context)
+
+
+def test_runtime_permission_ask_creates_hitl_request(tmp_path):
+    target = tmp_path / "note.txt"
+    harness = build_harness(
+        HarnessConfig(
+            workspace_root=str(tmp_path),
+            permission={
+                "rules": [
+                    {
+                        "name": "ask writes",
+                        "pattern": ".*",
+                        "verdict": "ask",
+                        "rule_type": "path",
+                    }
+                ]
+            },
+        )
+    )
+    harness.llm.responses = [
+        LLMResponse(
+            "write",
+            AgentAction(
+                type="call_tool",
+                tool="write_file",
+                args={"path": str(target), "content": "hello"},
+            ),
+        ),
+        LLMResponse("done", AgentAction(type="done")),
+    ]
+
+    agent_loop("write note", harness)
+
+    assert not target.exists()
+    assert len(harness.hitl.requests) == 1
+    assert harness.hitl.requests[0].status == "pending"

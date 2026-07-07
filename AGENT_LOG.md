@@ -69,6 +69,11 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Runtime factory now adds `ScopeGuard` and `FeedbackSensor`.
   - `run_shell` remains excluded from default runtime registration.
 
+- current permission-profile slice
+  - Runtime factory now loads permission rules from config.
+  - Runtime factory now creates a `HITLManager`.
+  - Ask-mode write actions create pending HITL requests and do not execute by default.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -80,7 +85,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `111 passed`
+- `114 passed`
 - `All checks passed!`
 
 ## Remaining Product Work

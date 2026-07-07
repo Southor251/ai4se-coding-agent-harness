@@ -44,3 +44,24 @@ def test_load_openai_config_from_yaml(tmp_path):
     assert config.llm["model"] == "custom-model"
     assert config.llm["base_url"] == "https://example.test/v1"
     assert config.llm["temperature"] == 0.2
+
+
+def test_load_permission_rules_from_yaml(tmp_path):
+    config_path = tmp_path / "agent-harness.yaml"
+    config_path.write_text(
+        "\n".join(
+            [
+                "permission:",
+                "  rules:",
+                "    - name: ask writes",
+                "      pattern: .*",
+                "      verdict: ask",
+                "      rule_type: path",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    config = load_config(config_path)
+
+    assert config.permission["rules"][0]["name"] == "ask writes"

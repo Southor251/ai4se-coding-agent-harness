@@ -12,6 +12,7 @@ The current implementation focuses on deterministic orchestration around an inje
 - Runtime factory registers safe default tools: `read_file`, `write_file`, `edit_file`, and `run_test`. `run_shell` is not registered by default.
 - Governance checks for workspace scope, sensitive paths, permission deny, and permission ask.
 - Human-in-the-loop request objects for ask-mode decisions.
+- Runtime config can load permission rules and create HITL requests for ask-mode tool actions.
 - Feedback classification from tool results and feedback injection into the next loop context.
 - JSONL trace recording and loading.
 - Deterministic mechanism demos for guardrails, feedback recovery, and scope blocking.
@@ -51,7 +52,7 @@ python -m ruff check src/ tests/ demo/
 
 The final sandbox verification for this recovery pass was:
 
-- `111 passed`
+- `114 passed`
 - `All checks passed!`
 
 ## Run Demos

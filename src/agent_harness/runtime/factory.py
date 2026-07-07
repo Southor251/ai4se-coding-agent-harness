@@ -2,11 +2,13 @@ from agent_harness.agent.harness import Harness
 from agent_harness.config.loader import HarnessConfig
 from agent_harness.credentials.manager import CredentialManager
 from agent_harness.feedback.sensor import FeedbackSensor
+from agent_harness.governance.hitl import HITLManager
+from agent_harness.governance.permission import PermissionPolicy
 from agent_harness.governance.scope import ScopeGuard
 from agent_harness.llm.interface import LLMResponse
 from agent_harness.llm.mock import MockLLM
 from agent_harness.llm.openai import OpenAILLM
-from agent_harness.models import AgentAction
+from agent_harness.models import AgentAction, PermissionRule
 from agent_harness.tools.builtin.edit_file import EditFileTool
 from agent_harness.tools.builtin.read_file import ReadFileTool
 from agent_harness.tools.builtin.run_test import RunTestTool
@@ -31,7 +33,9 @@ def build_harness(config: HarnessConfig, credential_manager=None) -> Harness:
     return Harness(
         llm=llm,
         tools=_default_safe_tools(),
+        permission=_permission_policy(config),
         scope=ScopeGuard(config.workspace_root),
+        hitl=HITLManager(),
         feedback=FeedbackSensor(),
         max_steps=config.max_steps,
         config=config.model_dump(),
@@ -45,3 +49,20 @@ def _default_safe_tools() -> ToolRegistry:
     registry.register(EditFileTool())
     registry.register(RunTestTool())
     return registry
+
+
+def _permission_policy(config: HarnessConfig) -> PermissionPolicy | None:
+    rules = config.permission.get("rules", [])
+    if not rules:
+        return None
+    policy = PermissionPolicy()
+    for rule in rules:
+        policy.add_rule(
+            PermissionRule(
+                name=rule["name"],
+                pattern=rule["pattern"],
+                verdict=rule["verdict"],
+                rule_type=rule["rule_type"],
+            )
+        )
+    return policy
