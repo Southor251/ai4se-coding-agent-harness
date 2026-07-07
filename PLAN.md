@@ -238,5 +238,6 @@ Latest verification:
 Remaining follow-up:
 
 - Implement real API-backed provider execution behind the working CLI runtime.
+- Next API milestone: replace text action parsing with a strict structured action protocol before trusting real task execution.
 - Build a richer trace replay UI.
 - Add personal-harness features after course delivery requirements are locked.

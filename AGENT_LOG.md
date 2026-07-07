@@ -54,6 +54,11 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Implemented minimal working `agent-harness run`, `agent-harness demo`, and `agent-harness web` commands.
   - Moved reusable demo logic into the installable `agent_harness.demos` package.
 
+- current provider slice
+  - Added OpenAI-compatible provider construction through config and credential manager.
+  - Added support for `model`, `base_url`, and `temperature`.
+  - Verified no-key execution exits safely without network calls.
+
 ## Verification
 
 Latest verification in the sandbox:

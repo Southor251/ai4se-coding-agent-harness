@@ -6,14 +6,26 @@ from agent_harness.models import AgentAction
 
 
 class OpenAILLM(LLMInterface):
-    def __init__(self, api_key: str | None = None, model: str = "gpt-4"):
+    def __init__(
+        self,
+        api_key: str | None = None,
+        model: str = "gpt-4",
+        base_url: str | None = None,
+        temperature: float = 0.7,
+        client=None,
+    ):
         self.api_key = api_key or os.environ.get("OPENAI_API_KEY", "")
         self.model = model
-        self._client = None
+        self.base_url = base_url
+        self.temperature = temperature
+        self._client = client
 
     def _get_client(self) -> OpenAI:
         if self._client is None:
-            self._client = OpenAI(api_key=self.api_key)
+            kwargs = {"api_key": self.api_key}
+            if self.base_url:
+                kwargs["base_url"] = self.base_url
+            self._client = OpenAI(**kwargs)
         return self._client
 
     def call(self, context: list[dict], menu: list[dict]) -> LLMResponse:
@@ -28,7 +40,7 @@ class OpenAILLM(LLMInterface):
             response = client.chat.completions.create(
                 model=self.model,
                 messages=messages,
-                temperature=0.7,
+                temperature=self.temperature,
             )
             text = response.choices[0].message.content or ""
             action = self._parse_text_action(text)

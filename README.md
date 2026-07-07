@@ -18,7 +18,8 @@ The current implementation focuses on deterministic orchestration around an inje
 
 ## Known Limits
 
-- `agent-harness run`, `agent-harness demo`, and `agent-harness web` are minimal working local commands in this milestone. `run` uses the safe MockLLM runtime by default; real API execution is a later milestone.
+- `agent-harness run`, `agent-harness demo`, and `agent-harness web` are minimal working local commands in this milestone. `run` uses the safe MockLLM runtime by default and can construct an OpenAI-compatible provider from config and credentials.
+- Real API-backed task execution is still limited by the current text action parser; the next milestone is a stricter structured action protocol.
 - The shell tool is intentionally conservative in governed loop execution. With scope enabled and no explicit permission policy, `run_shell` is blocked by default.
 - This is not a complete OS sandbox. Scope and permission checks are harness-level guardrails.
 - Reflection content is scaffolded only; the student should complete `REFLECTION.md` personally.
@@ -75,6 +76,30 @@ agent-harness credentials clear
 ```
 
 Credential values are never printed. The manager tries keyring first and falls back to a local `.env` file. Do not commit `.env`; it is ignored by `.gitignore`.
+
+## API Provider Config
+
+The default config is safe and uses `mock`:
+
+```yaml
+llm:
+  provider: mock
+  model: gpt-4
+  temperature: 0.7
+  base_url:
+```
+
+For OpenAI-compatible APIs, use:
+
+```yaml
+llm:
+  provider: openai
+  model: your-model
+  temperature: 0.2
+  base_url: https://api.openai.com/v1
+```
+
+If no key is configured, `agent-harness run --config <file>` exits safely with `API key not configured`.
 
 ## Trace Theater
 

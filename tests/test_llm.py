@@ -54,24 +54,51 @@ class FakeOpenAIResponse:
 
 
 class FakeCompletions:
+    def __init__(self):
+        self.last_kwargs = None
+
     def create(self, **kwargs):
+        self.last_kwargs = kwargs
         return FakeOpenAIResponse()
 
 
 class FakeChat:
-    completions = FakeCompletions()
+    def __init__(self):
+        self.completions = FakeCompletions()
 
 
 class FakeClient:
-    chat = FakeChat()
+    def __init__(self):
+        self.chat = FakeChat()
 
 
 def test_openai_llm_parses_text_tool_action():
     llm = OpenAILLM(api_key="test-key")
-    llm._client = FakeClient()
+    client = FakeClient()
+    llm._client = client
 
     result = llm.call([], [{"name": "read_file", "description": "read"}])
 
     assert result.action.type == "call_tool"
     assert result.action.tool == "read_file"
     assert result.action.args == {"path": "README.md"}
+
+
+def test_openai_llm_passes_model_and_temperature_to_client():
+    llm = OpenAILLM(api_key="test-key", model="custom-model", temperature=0.2)
+    client = FakeClient()
+    llm._client = client
+
+    llm.call([{"role": "user", "content": "hello"}], [])
+
+    assert client.chat.completions.last_kwargs["model"] == "custom-model"
+    assert client.chat.completions.last_kwargs["temperature"] == 0.2
+    assert client.chat.completions.last_kwargs["messages"] == [
+        {"role": "user", "content": "hello"}
+    ]
+
+
+def test_openai_llm_builds_client_with_base_url():
+    llm = OpenAILLM(api_key="test-key", model="custom-model", base_url="https://example.test/v1")
+
+    assert llm.base_url == "https://example.test/v1"
