@@ -52,7 +52,7 @@ python -m ruff check src/ tests/ demo/
 
 The final sandbox verification for this recovery pass was:
 
-- `115 passed`
+- `117 passed`
 - `All checks passed!`
 
 ## Run Demos
@@ -121,7 +121,7 @@ Invalid JSON or malformed actions are fed back into the loop as an invalid-actio
 
 ## Trace Theater
 
-Trace loading is implemented in `agent_harness.web.theater.load_trace_for_display`. The Streamlit UI is intentionally minimal in this milestone:
+Trace loading is implemented in `agent_harness.web.theater.load_trace_for_display`. Trace summary counts are available through `summarize_trace`.
 
 ```bash
 streamlit run src/agent_harness/web/theater.py

@@ -1,4 +1,6 @@
 from pathlib import Path
+from dataclasses import asdict, is_dataclass
+from typing import Any
 
 from agent_harness.trace.store import TraceStore
 
@@ -20,6 +22,24 @@ def load_trace_for_display(path: str | Path) -> list[dict]:
     return rows
 
 
+def summarize_trace(records: list[Any]) -> dict:
+    normalized = [_to_dict(record) for record in records]
+    return {
+        "steps": len(normalized),
+        "tool_calls": sum(
+            1 for record in normalized if (record.get("llm_action") or {}).get("type") == "call_tool"
+        ),
+        "denials": sum(1 for record in normalized if record.get("permission_verdict") == "deny"),
+        "feedback_events": sum(1 for record in normalized if record.get("feedback")),
+    }
+
+
+def _to_dict(record: Any) -> dict:
+    if is_dataclass(record):
+        return asdict(record)
+    return record
+
+
 def main(path: str = ".harness/trace/session.jsonl"):
     import streamlit as st
 
@@ -28,6 +48,8 @@ def main(path: str = ".harness/trace/session.jsonl"):
     if not rows:
         st.info("No trace records found.")
         return
+    summary = summarize_trace(TraceStore.load(path))
+    st.write(summary)
     selected = st.slider("Step", 1, len(rows), 1)
     row = rows[selected - 1]
     st.subheader(f"Step {row['step']}")

@@ -232,7 +232,7 @@ Completed:
 
 Latest verification:
 
-- `python -m pytest -q` -> `115 passed`
+- `python -m pytest -q` -> `117 passed`
 - `python -m ruff check src/ tests/ demo/` -> `All checks passed!`
 
 Remaining follow-up:
@@ -242,5 +242,6 @@ Remaining follow-up:
 - Runtime factory now registers safe default tools under scope and feedback; shell remains excluded by default.
 - Runtime factory now loads permission rules and creates HITL requests for ask-mode actions.
 - `agent-harness run` now writes JSONL traces by default.
+- Trace theater can summarize steps, tool calls, denials, and feedback events.
 - Build a richer trace replay UI.
 - Add personal-harness features after course delivery requirements are locked.

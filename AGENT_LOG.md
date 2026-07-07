@@ -79,6 +79,10 @@ This log records the recovery work performed in the sandbox copy of the project.
   - `RunResult.trace_path` is populated.
   - CLI accepts `--trace <path>` and defaults to `.harness/runs/latest.jsonl`.
 
+- current theater-summary slice
+  - Added `summarize_trace(records)`.
+  - Theater now reports step, tool-call, denial, and feedback-event counts.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -90,7 +94,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `115 passed`
+- `117 passed`
 - `All checks passed!`
 
 ## Remaining Product Work
