@@ -1,15 +1,18 @@
 import argparse
 
 from agent_harness.cli.credentials import add_credentials_parser
+from agent_harness.cli.demo import add_demo_parser
+from agent_harness.cli.run import add_run_parser
+from agent_harness.cli.web import add_web_parser
 
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="agent-harness")
     subparsers = parser.add_subparsers(dest="command")
 
-    subparsers.add_parser("run", help="run a harness goal")
-    subparsers.add_parser("demo", help="run deterministic mechanism demos")
-    subparsers.add_parser("web", help="start the trace theater")
+    add_run_parser(subparsers)
+    add_demo_parser(subparsers)
+    add_web_parser(subparsers)
     add_credentials_parser(subparsers)
     return parser
 
@@ -23,13 +26,11 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "credentials":
         return args.handler(args)
-    if args.command in {"run", "demo", "web"}:
-        print(f"{args.command} is not implemented yet")
-        return 0
+    if hasattr(args, "handler"):
+        return args.handler(args)
     parser.print_help()
     return 0
 
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

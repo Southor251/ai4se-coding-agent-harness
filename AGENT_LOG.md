@@ -48,6 +48,12 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Added scope enforcement for `run_test(pattern=...)`.
   - Added parsing for simple OpenAI text tool actions with `tool:` and JSON `args:`.
 
+- current application-entry slice
+  - Added a master plan for the final API-backed personal harness target.
+  - Added runtime factory and `RunResult`.
+  - Implemented minimal working `agent-harness run`, `agent-harness demo`, and `agent-harness web` commands.
+  - Moved reusable demo logic into the installable `agent_harness.demos` package.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -59,12 +65,12 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `88 passed`
+- `96 passed`
 - `All checks passed!`
 
 ## Remaining Product Work
 
-- Implement real `agent-harness run`, `agent-harness demo`, and `agent-harness web` command behavior.
+- Implement real API-backed provider execution behind the working CLI runtime.
 - Replace the minimal Streamlit theater with a richer replay UI.
 - Add real provider configuration and model selection once target provider/version requirements are fixed.
 - Expand personal-harness features such as persistent project memory, patch planning, and richer tool permissions.

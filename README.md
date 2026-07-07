@@ -18,7 +18,7 @@ The current implementation focuses on deterministic orchestration around an inje
 
 ## Known Limits
 
-- `agent-harness run`, `agent-harness demo`, and `agent-harness web` are CLI skeleton commands in this milestone.
+- `agent-harness run`, `agent-harness demo`, and `agent-harness web` are minimal working local commands in this milestone. `run` uses the safe MockLLM runtime by default; real API execution is a later milestone.
 - The shell tool is intentionally conservative in governed loop execution. With scope enabled and no explicit permission policy, `run_shell` is blocked by default.
 - This is not a complete OS sandbox. Scope and permission checks are harness-level guardrails.
 - Reflection content is scaffolded only; the student should complete `REFLECTION.md` personally.
@@ -49,7 +49,7 @@ python -m ruff check src/ tests/ demo/
 
 The final sandbox verification for this recovery pass was:
 
-- `88 passed`
+- `96 passed`
 - `All checks passed!`
 
 ## Run Demos
@@ -66,6 +66,9 @@ The demos use `MockLLM`; they do not require an API key.
 
 ```bash
 agent-harness --help
+agent-harness run "say done"
+agent-harness demo
+agent-harness web --trace trace.jsonl
 agent-harness credentials show
 agent-harness credentials update <secret>
 agent-harness credentials clear

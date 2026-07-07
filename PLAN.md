@@ -232,11 +232,11 @@ Completed:
 
 Latest verification:
 
-- `python -m pytest -q` -> `88 passed`
+- `python -m pytest -q` -> `96 passed`
 - `python -m ruff check src/ tests/ demo/` -> `All checks passed!`
 
 Remaining follow-up:
 
-- Implement full behavior for `agent-harness run`, `agent-harness demo`, and `agent-harness web`.
+- Implement real API-backed provider execution behind the working CLI runtime.
 - Build a richer trace replay UI.
 - Add personal-harness features after course delivery requirements are locked.
