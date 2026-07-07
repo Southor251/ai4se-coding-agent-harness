@@ -1,4 +1,4 @@
-from agent_harness.config.loader import HarnessConfig, load_config
+from agent_harness.config.loader import HarnessConfig, load_config, load_config_with_profile
 
 
 def test_default_config_values():
@@ -65,3 +65,42 @@ def test_load_permission_rules_from_yaml(tmp_path):
     config = load_config(config_path)
 
     assert config.permission["rules"][0]["name"] == "ask writes"
+
+
+def test_load_config_with_profile_overrides_base(tmp_path):
+    base_path = tmp_path / "base.yaml"
+    profile_path = tmp_path / "profile.yaml"
+    base_path.write_text(
+        "\n".join(
+            [
+                "max_steps: 7",
+                "workspace_root: ./base",
+                "llm:",
+                "  provider: mock",
+                "  model: base-model",
+                "memory:",
+                "  enabled: false",
+            ]
+        ),
+        encoding="utf-8",
+    )
+    profile_path.write_text(
+        "\n".join(
+            [
+                "workspace_root: ./profile",
+                "llm:",
+                "  provider: openai",
+                "memory:",
+                "  enabled: true",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    config = load_config_with_profile(base_path, profile_path)
+
+    assert config.max_steps == 7
+    assert config.workspace_root == "./profile"
+    assert config.llm["provider"] == "openai"
+    assert config.llm["model"] == "base-model"
+    assert config.memory["enabled"] is True

@@ -1,0 +1,14 @@
+workspace_root: "."
+llm:
+  provider: mock
+  model: gpt-4
+  temperature: 0.2
+  base_url:
+permission:
+  rules:
+    - name: ask before writes
+      pattern: .*
+      verdict: ask
+      rule_type: path
+memory:
+  enabled: true

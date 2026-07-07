@@ -87,6 +87,11 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Added `ProjectMemory` append-only markdown store.
   - Runtime config can enable project memory with `memory.enabled`.
 
+- current personal-profile slice
+  - Added config/profile deep merge.
+  - Added `agent-harness run --profile <path>`.
+  - Added `config/personal-harness.yaml` as a safe starter profile.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -98,7 +103,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `120 passed`
+- `122 passed`
 - `All checks passed!`
 
 ## Remaining Product Work

@@ -53,7 +53,7 @@ python -m ruff check src/ tests/ demo/
 
 The final sandbox verification for this recovery pass was:
 
-- `120 passed`
+- `122 passed`
 - `All checks passed!`
 
 ## Run Demos
@@ -71,6 +71,7 @@ The demos use `MockLLM`; they do not require an API key.
 ```bash
 agent-harness --help
 agent-harness run "say done" --trace .harness/runs/latest.jsonl
+agent-harness run "say done" --profile config/personal-harness.yaml
 agent-harness demo
 agent-harness web --trace trace.jsonl
 agent-harness credentials show
@@ -103,6 +104,8 @@ llm:
 ```
 
 If no key is configured, `agent-harness run --config <file>` exits safely with `API key not configured`.
+
+Use `--profile config/personal-harness.yaml` to overlay project-specific workspace, permission, model, and memory settings on top of the base config.
 
 Model responses must be exactly one JSON object:
 

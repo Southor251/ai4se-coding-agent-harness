@@ -232,7 +232,7 @@ Completed:
 
 Latest verification:
 
-- `python -m pytest -q` -> `120 passed`
+- `python -m pytest -q` -> `122 passed`
 - `python -m ruff check src/ tests/ demo/` -> `All checks passed!`
 
 Remaining follow-up:
@@ -244,5 +244,6 @@ Remaining follow-up:
 - `agent-harness run` now writes JSONL traces by default.
 - Trace theater can summarize steps, tool calls, denials, and feedback events.
 - Optional project memory writes append-only notes under `.harness/memory/project.md`.
+- `agent-harness run` accepts `--profile <path>` for project-specific overlays.
 - Build a richer trace replay UI.
 - Add personal-harness features after course delivery requirements are locked.

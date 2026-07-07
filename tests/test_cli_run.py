@@ -51,3 +51,23 @@ def test_run_goal_writes_trace_file(tmp_path):
     assert result.trace_path == str(trace_path)
     assert trace_path.exists()
     assert "done" in trace_path.read_text(encoding="utf-8")
+
+
+def test_run_command_accepts_profile(tmp_path, capsys):
+    profile_path = tmp_path / "profile.yaml"
+    profile_path.write_text("max_steps: 2\nmemory:\n  enabled: true\n", encoding="utf-8")
+
+    exit_code = main(
+        [
+            "run",
+            "say done",
+            "--profile",
+            str(profile_path),
+            "--trace",
+            str(tmp_path / "trace.jsonl"),
+        ]
+    )
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert "done" in captured.out
