@@ -53,7 +53,14 @@ def agent_loop(goal: str, H: Harness) -> str:
         feedback = None
         menu = []
         if H.tools:
-            menu = [{"name": t.name, "description": t.description} for t in H.tools.list()]
+            menu = [
+                {
+                    "name": t.name,
+                    "description": t.description,
+                    "args_schema": t.args_schema,
+                }
+                for t in H.tools.list()
+            ]
         response = H.llm.call(H.context, menu)
         H.context.append({"role": "assistant", "content": response.text})
         if response.action.type == "done":

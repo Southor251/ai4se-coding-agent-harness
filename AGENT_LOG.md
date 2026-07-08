@@ -108,6 +108,11 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Extended the Streamlit theater with goal/config/profile/trace inputs, run result display, trace summary, step inspection, and HITL approval controls.
   - Kept Web logic on the same governed runtime and shared HITL store used by the CLI.
 
+- current tool-schema slice
+  - Added argument schemas to the tool base and built-in tools.
+  - Agent loop menus now pass tool argument schemas to the LLM layer.
+  - OpenAI-compatible prompts now include argument names and descriptions for structured JSON actions.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -119,7 +124,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `138 passed`
+- `142 passed`
 - `All checks passed!`
 - CLI smoke: `agent-harness run "say done" --profile config/personal-harness.yaml --trace .harness/runs/latest.jsonl`
 - CLI smoke: `agent-harness hitl list --store .harness/hitl/requests.json`

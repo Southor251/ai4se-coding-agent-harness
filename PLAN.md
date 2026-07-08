@@ -226,8 +226,9 @@ make web       # 启动 Agent Loop Theater
 - HITL approval execution keeps scope enforcement before running stored actions.
 - Web task/HITL service helpers are implemented in `agent_harness.web.services`.
 - Streamlit theater can run a goal, show run/trace state, and list/approve/deny HITL requests against the same store.
+- Tool menus now include argument schemas for OpenAI-compatible structured JSON actions.
 - `run_shell` remains outside the default governed runtime tool registry.
-- Latest verification: `138 passed`, ruff passed, CLI run/list smoke passed.
+- Latest verification: `142 passed`, ruff passed, CLI run/list smoke passed.
 - Secret/TODO scan found only API-key documentation and fake test credential references.
 
 The sandbox recovery pass implemented the deterministic harness kernel described in `docs/superpowers/plans/2026-07-07-harness-recovery-and-kernel-redesign.md`.

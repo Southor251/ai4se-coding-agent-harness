@@ -5,7 +5,15 @@ from agent_harness.models import ToolResult
 
 class EditFileTool(ToolBase):
     def __init__(self):
-        super().__init__(name="edit_file", description="Replace text in a file")
+        super().__init__(
+            name="edit_file",
+            description="Replace text in a file",
+            args_schema={
+                "path": "File path to edit",
+                "old": "Text to replace",
+                "new": "Replacement text",
+            },
+        )
     def run(self, path: str = "", old: str = "", new: str = "") -> ToolResult:
         try:
             content = Path(path).read_text(encoding="utf-8")

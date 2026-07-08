@@ -3,6 +3,18 @@ from agent_harness.agent.loop import agent_loop
 from agent_harness.llm.mock import MockLLM
 from agent_harness.llm.interface import LLMResponse
 from agent_harness.models import AgentAction
+from agent_harness.tools.builtin.write_file import WriteFileTool
+from agent_harness.tools.registry import ToolRegistry
+
+
+class SpyLLM(MockLLM):
+    def __init__(self):
+        super().__init__([LLMResponse(text="done", action=AgentAction(type="done"))])
+        self.last_menu = None
+
+    def call(self, context, menu):
+        self.last_menu = menu
+        return super().call(context, menu)
 
 
 def test_harness_holds_llm():
@@ -58,3 +70,23 @@ def test_agent_loop_resets_step_between_runs():
     assert agent_loop("first goal", H) == "first"
     assert agent_loop("second goal", H) == "second"
     assert H.step == 1
+
+
+def test_agent_loop_tool_menu_includes_arg_schema():
+    registry = ToolRegistry()
+    registry.register(WriteFileTool())
+    llm = SpyLLM()
+    H = Harness(llm=llm, tools=registry)
+
+    agent_loop("inspect menu", H)
+
+    assert llm.last_menu == [
+        {
+            "name": "write_file",
+            "description": "Write content to file",
+            "args_schema": {
+                "path": "File path to write",
+                "content": "UTF-8 text content to write",
+            },
+        }
+    ]

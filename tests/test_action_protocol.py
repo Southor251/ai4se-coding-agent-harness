@@ -1,4 +1,4 @@
-from agent_harness.llm.action_protocol import parse_agent_action
+from agent_harness.llm.action_protocol import action_protocol_prompt, parse_agent_action
 
 
 def test_parse_done_action_json():
@@ -36,3 +36,19 @@ def test_call_tool_without_tool_is_invalid():
 
     assert action.type == "invalid"
     assert "tool" in action.args["error"]
+
+
+def test_action_protocol_prompt_includes_tool_arg_schema():
+    prompt = action_protocol_prompt(
+        [
+            {
+                "name": "write_file",
+                "description": "Write content to file",
+                "args_schema": {"path": "target path", "content": "file content"},
+            }
+        ]
+    )
+
+    assert "write_file" in prompt
+    assert "path" in prompt
+    assert "content" in prompt

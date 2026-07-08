@@ -49,6 +49,7 @@ The Dockerfile also provides a containerized verification path.
 - Feedback demos now require an actual failed attempt followed by a successful retry.
 - HITL approval now persists requests across processes, and both CLI and Web helpers route approvals through the same governed runtime.
 - Web UI logic is kept thin; task execution, trace summary, and HITL operations live in `agent_harness.web.services` so they can be unit tested without a browser.
+- Tool menus include argument schemas before reaching the OpenAI-compatible provider, reducing malformed real-API actions without expanding permissions.
 
 ## Evidence
 
@@ -56,7 +57,7 @@ The implementation was developed with failing tests first for the behavioral fix
 
 Latest observed results:
 
-- `138 passed`
+- `142 passed`
 - `All checks passed!`
 - CLI smoke for `run` and `hitl list` passed.
 - Secret/TODO scan produced only expected API-key documentation and fake test-token references.

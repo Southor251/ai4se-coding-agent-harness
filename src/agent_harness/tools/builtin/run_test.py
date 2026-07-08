@@ -7,7 +7,11 @@ from agent_harness.models import ToolResult
 
 class RunTestTool(ToolBase):
     def __init__(self):
-        super().__init__(name="run_test", description="Run tests with pytest")
+        super().__init__(
+            name="run_test",
+            description="Run tests with pytest",
+            args_schema={"pattern": "Pytest path or test pattern"},
+        )
 
     def run(self, pattern: str = "tests/") -> ToolResult:
         try:

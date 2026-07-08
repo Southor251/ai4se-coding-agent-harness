@@ -5,7 +5,11 @@ from agent_harness.models import ToolResult
 
 class ReadFileTool(ToolBase):
     def __init__(self):
-        super().__init__(name="read_file", description="Read file contents")
+        super().__init__(
+            name="read_file",
+            description="Read file contents",
+            args_schema={"path": "File path to read"},
+        )
     def run(self, path: str = "") -> ToolResult:
         try:
             content = Path(path).read_text(encoding="utf-8")

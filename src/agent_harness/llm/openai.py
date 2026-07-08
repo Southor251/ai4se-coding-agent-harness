@@ -33,7 +33,7 @@ class OpenAILLM(LLMInterface):
             return LLMResponse(text="API key not configured", action=AgentAction(type="done"))
         messages = [{"role": m.get("role", "user"), "content": m.get("content", "")} for m in context]
         if menu:
-            tool_desc = "\n".join([f"- {t.get('name', '?')}: {t.get('description', '')}" for t in menu])
+            tool_desc = "\n".join(_format_tool_for_message(tool) for tool in menu)
             messages.append({"role": "system", "content": f"Available tools:\n{tool_desc}"})
         messages.append({"role": "system", "content": action_protocol_prompt(menu)})
         try:
@@ -48,3 +48,11 @@ class OpenAILLM(LLMInterface):
             return LLMResponse(text=text, action=action)
         except Exception as e:
             return LLMResponse(text=f"API error: {e}", action=AgentAction(type="done"))
+
+
+def _format_tool_for_message(tool: dict) -> str:
+    args_schema = tool.get("args_schema") or {}
+    if not args_schema:
+        return f"- {tool.get('name', '?')}: {tool.get('description', '')}"
+    args = ", ".join(f"{key}: {value}" for key, value in args_schema.items())
+    return f"- {tool.get('name', '?')}: {tool.get('description', '')}; args: {args}"

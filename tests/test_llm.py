@@ -115,6 +115,29 @@ def test_openai_llm_passes_model_and_temperature_to_client():
     assert "Respond with exactly one JSON object" in messages[-1]["content"]
 
 
+def test_openai_llm_includes_tool_arg_schema_in_prompt():
+    llm = OpenAILLM(api_key="test-key")
+    client = FakeClient()
+    llm._client = client
+
+    llm.call(
+        [],
+        [
+            {
+                "name": "write_file",
+                "description": "Write content to file",
+                "args_schema": {"path": "File path to write", "content": "UTF-8 text content"},
+            }
+        ],
+    )
+
+    messages = client.chat.completions.last_kwargs["messages"]
+    prompt_text = "\n".join(message["content"] for message in messages)
+    assert "write_file" in prompt_text
+    assert "path" in prompt_text
+    assert "content" in prompt_text
+
+
 def test_openai_llm_builds_client_with_base_url():
     llm = OpenAILLM(api_key="test-key", model="custom-model", base_url="https://example.test/v1")
 

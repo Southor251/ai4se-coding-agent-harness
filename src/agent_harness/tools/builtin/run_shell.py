@@ -5,7 +5,11 @@ from agent_harness.models import ToolResult
 
 class RunShellTool(ToolBase):
     def __init__(self):
-        super().__init__(name="run_shell", description="Execute a shell command")
+        super().__init__(
+            name="run_shell",
+            description="Execute a shell command",
+            args_schema={"command": "Shell command string"},
+        )
     def run(self, command: str = "") -> ToolResult:
         try:
             result = subprocess.run(command, shell=True, capture_output=True, text=True, timeout=30)

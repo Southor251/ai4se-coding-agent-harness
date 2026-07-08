@@ -118,3 +118,17 @@ def test_run_test_uses_return_code_for_success():
         result = tool.run(pattern="tests/test_import.py")
 
     assert not result.success
+
+
+def test_builtin_tools_expose_argument_schemas():
+    assert ReadFileTool().args_schema == {"path": "File path to read"}
+    assert WriteFileTool().args_schema == {
+        "path": "File path to write",
+        "content": "UTF-8 text content to write",
+    }
+    assert EditFileTool().args_schema == {
+        "path": "File path to edit",
+        "old": "Text to replace",
+        "new": "Replacement text",
+    }
+    assert RunTestTool().args_schema == {"pattern": "Pytest path or test pattern"}

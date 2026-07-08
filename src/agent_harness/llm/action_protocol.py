@@ -28,13 +28,13 @@ def parse_agent_action(text: str) -> AgentAction:
 
 
 def action_protocol_prompt(menu: list[dict]) -> str:
-    tool_names = ", ".join(tool.get("name", "?") for tool in menu) or "none"
+    tool_details = _format_tool_details(menu)
     return (
         "Respond with exactly one JSON object and no prose. "
         'Allowed action forms: {"type":"done"}, '
         '{"type":"take_note","note":"..."}, '
         '{"type":"call_tool","tool":"tool_name","args":{...}}. '
-        f"Available tools: {tool_names}."
+        f"Available tools: {tool_details}."
     )
 
 
@@ -57,3 +57,18 @@ def _parse_take_note(payload: dict[str, Any]) -> AgentAction:
 
 def _invalid(message: str) -> AgentAction:
     return AgentAction(type="invalid", args={"error": message})
+
+
+def _format_tool_details(menu: list[dict]) -> str:
+    if not menu:
+        return "none"
+    details = []
+    for tool in menu:
+        name = tool.get("name", "?")
+        args_schema = tool.get("args_schema") or {}
+        if args_schema:
+            args = ", ".join(f"{key}: {value}" for key, value in args_schema.items())
+            details.append(f"{name} args {{{args}}}")
+        else:
+            details.append(str(name))
+    return "; ".join(details)
