@@ -8,6 +8,7 @@ class AgentAction:
     tool: str | None = None
     args: dict | None = None
     note: str | None = None
+    answer: str | None = None
     changed_code: bool = False
 
 

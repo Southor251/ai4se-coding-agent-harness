@@ -24,14 +24,14 @@ def parse_agent_action(text: str) -> AgentAction:
         return _parse_call_tool(payload)
     if action_type == "take_note":
         return _parse_take_note(payload)
-    return AgentAction(type="done")
+    return _parse_done(payload)
 
 
 def action_protocol_prompt(menu: list[dict]) -> str:
     tool_details = _format_tool_details(menu)
     return (
         "Respond with exactly one JSON object and no prose. "
-        'Allowed action forms: {"type":"done"}, '
+        'Allowed action forms: {"type":"done","answer":"..."}, '
         '{"type":"take_note","note":"..."}, '
         '{"type":"call_tool","tool":"tool_name","args":{...}}. '
         f"Available tools: {tool_details}."
@@ -53,6 +53,13 @@ def _parse_take_note(payload: dict[str, Any]) -> AgentAction:
     if not isinstance(note, str) or not note:
         return _invalid("take_note action requires a non-empty note string")
     return AgentAction(type="take_note", note=note)
+
+
+def _parse_done(payload: dict[str, Any]) -> AgentAction:
+    answer = payload.get("answer")
+    if answer is not None and not isinstance(answer, str):
+        return _invalid("done action answer must be a string")
+    return AgentAction(type="done", answer=answer)
 
 
 def _invalid(message: str) -> AgentAction:

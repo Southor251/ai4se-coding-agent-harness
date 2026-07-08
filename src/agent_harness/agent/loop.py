@@ -64,7 +64,7 @@ def agent_loop(goal: str, H: Harness) -> str:
         response = H.llm.call(H.context, menu)
         H.context.append({"role": "assistant", "content": response.text})
         if response.action.type == "done":
-            answer = response.text
+            answer = response.action.answer or response.text
             H.halt_reason = "done"
             _record_trace(
                 H,

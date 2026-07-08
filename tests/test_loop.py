@@ -42,6 +42,17 @@ def test_agent_loop_immediate_done():
     assert H.context[-1]["content"] == "ok"
 
 
+def test_agent_loop_returns_done_answer_field_when_present():
+    raw = '{"type": "done", "answer": "finished"}'
+    mock = MockLLM(responses=[LLMResponse(text=raw, action=AgentAction(type="done", answer="finished"))])
+    H = Harness(llm=mock, max_steps=10)
+
+    answer = agent_loop("test", H)
+
+    assert answer == "finished"
+    assert H.context[-1]["content"] == raw
+
+
 def test_agent_loop_multiple_steps():
     r1 = LLMResponse(text="first", action=AgentAction(type="call_tool", tool="read_file"))
     r2 = LLMResponse(text="done", action=AgentAction(type="done"))

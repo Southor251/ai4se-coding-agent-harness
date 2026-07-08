@@ -7,6 +7,13 @@ def test_parse_done_action_json():
     assert action.type == "done"
 
 
+def test_parse_done_action_with_answer():
+    action = parse_agent_action('{"type": "done", "answer": "finished"}')
+
+    assert action.type == "done"
+    assert action.answer == "finished"
+
+
 def test_parse_call_tool_action_json():
     action = parse_agent_action(
         '{"type": "call_tool", "tool": "read_file", "args": {"path": "README.md"}}'

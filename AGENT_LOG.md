@@ -113,6 +113,10 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Agent loop menus now pass tool argument schemas to the LLM layer.
   - OpenAI-compatible prompts now include argument names and descriptions for structured JSON actions.
 
+- current done-answer slice
+  - Structured `done` actions now support an optional `answer` field.
+  - The agent loop returns the `answer` field as user-facing output when present, while preserving old raw-text behavior for legacy mock responses.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -124,7 +128,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `142 passed`
+- `144 passed`
 - `All checks passed!`
 - CLI smoke: `agent-harness run "say done" --profile config/personal-harness.yaml --trace .harness/runs/latest.jsonl`
 - CLI smoke: `agent-harness hitl list --store .harness/hitl/requests.json`

@@ -11,6 +11,7 @@ The current implementation focuses on deterministic orchestration around an inje
 - Built-in tools for reading, writing, editing files, running shell commands, and running tests.
 - Runtime factory registers safe default tools: `read_file`, `write_file`, `edit_file`, and `run_test`. `run_shell` is not registered by default.
 - Tool menus include argument schemas so API-backed models can emit correct JSON action fields.
+- `done` actions can carry an `answer` field for user-facing final output.
 - Governance checks for workspace scope, sensitive paths, permission deny, and permission ask.
 - Human-in-the-loop request objects for ask-mode decisions.
 - Runtime config can load permission rules and create HITL requests for ask-mode tool actions.
@@ -56,7 +57,7 @@ python -m ruff check src/ tests/ demo/
 
 The final sandbox verification for this recovery pass was:
 
-- `142 passed`
+- `144 passed`
 - `All checks passed!`
 
 ## Run Demos
@@ -116,7 +117,7 @@ Use `--profile config/personal-harness.yaml` to overlay project-specific workspa
 Model responses must be exactly one JSON object:
 
 ```json
-{"type":"done"}
+{"type":"done","answer":"finished"}
 ```
 
 ```json
