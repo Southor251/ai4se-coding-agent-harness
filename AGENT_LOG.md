@@ -131,6 +131,11 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Both tools expose argument schemas for API-backed action generation.
   - `run_shell` remains excluded from the default governed runtime.
 
+- current multi-read/diff tools slice
+  - Added `read_many` for bounded batch file reads.
+  - Added `git_diff` as a non-shell subprocess wrapper for read-only diff inspection.
+  - Registered both tools in the default governed runtime.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -142,7 +147,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `151 passed`
+- `153 passed`
 - `All checks passed!`
 - CLI smoke: `agent-harness run "say done" --profile config/personal-harness.yaml --trace .harness/runs/latest.jsonl`
 - CLI smoke: `agent-harness hitl list --store .harness/hitl/requests.json`

@@ -54,6 +54,7 @@ The Dockerfile also provides a containerized verification path.
 - Fake OpenAI client end-to-end coverage now verifies multi-step API-backed runtime execution through read/write/test tools, trace, feedback, and final answer.
 - HITL requests persist resume context and step, enabling approved actions to inject tool results and continue the agent loop.
 - Safe read-only browsing tools `list_files` and `search_text` are registered by default without enabling shell execution.
+- `read_many` and `git_diff` extend project inspection while still avoiding default shell access.
 
 ## Evidence
 
@@ -61,7 +62,7 @@ The implementation was developed with failing tests first for the behavioral fix
 
 Latest observed results:
 
-- `151 passed`
+- `153 passed`
 - `All checks passed!`
 - CLI smoke for `run` and `hitl list` passed.
 - Secret/TODO scan produced only expected API-key documentation and fake test-token references.

@@ -10,6 +10,8 @@ from agent_harness.tools.builtin.run_shell import RunShellTool
 from agent_harness.tools.builtin.run_test import RunTestTool
 from agent_harness.tools.builtin.list_files import ListFilesTool
 from agent_harness.tools.builtin.search_text import SearchTextTool
+from agent_harness.tools.builtin.read_many import ReadManyTool
+from agent_harness.tools.builtin.git_diff import GitDiffTool
 from unittest.mock import patch
 
 
@@ -144,6 +146,33 @@ def test_search_text_tool_finds_matches(tmp_path):
     assert "a.txt:1:alpha" in result.output
 
 
+def test_read_many_tool_reads_multiple_files(tmp_path):
+    first = tmp_path / "a.txt"
+    second = tmp_path / "b.txt"
+    first.write_text("alpha", encoding="utf-8")
+    second.write_text("beta", encoding="utf-8")
+
+    result = ReadManyTool().run(paths=[str(first), str(second)])
+
+    assert result.success
+    assert "## " in result.output
+    assert "alpha" in result.output
+    assert "beta" in result.output
+
+
+def test_git_diff_tool_returns_diff(tmp_path):
+    class Completed:
+        returncode = 0
+        stdout = "diff --git a/a.txt b/a.txt\n+new"
+        stderr = ""
+
+    with patch("agent_harness.tools.builtin.git_diff.subprocess.run", return_value=Completed()):
+        result = GitDiffTool().run(path=str(tmp_path), target="a.txt")
+
+    assert result.success
+    assert "+new" in result.output
+
+
 def test_builtin_tools_expose_argument_schemas():
     assert ReadFileTool().args_schema == {"path": "File path to read"}
     assert WriteFileTool().args_schema == {
@@ -164,4 +193,12 @@ def test_builtin_tools_expose_argument_schemas():
         "path": "Directory or file path to search",
         "query": "Literal text to search for",
         "max_matches": "Maximum number of matches to return",
+    }
+    assert ReadManyTool().args_schema == {
+        "paths": "List of file paths to read",
+        "max_bytes": "Maximum bytes per file",
+    }
+    assert GitDiffTool().args_schema == {
+        "path": "Repository path",
+        "target": "Optional file or directory path to diff",
     }
