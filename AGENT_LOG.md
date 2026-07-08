@@ -136,6 +136,10 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Added `git_diff` as a non-shell subprocess wrapper for read-only diff inspection.
   - Registered both tools in the default governed runtime.
 
+- current precise-edit slice
+  - Added `replace_once` for safer exact single-match edits.
+  - Registered `replace_once` in the default governed runtime.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -147,7 +151,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `153 passed`
+- `155 passed`
 - `All checks passed!`
 - CLI smoke: `agent-harness run "say done" --profile config/personal-harness.yaml --trace .harness/runs/latest.jsonl`
 - CLI smoke: `agent-harness hitl list --store .harness/hitl/requests.json`

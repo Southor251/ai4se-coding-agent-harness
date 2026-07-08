@@ -59,6 +59,7 @@ def test_build_harness_registers_default_safe_tools():
         "read_file",
         "read_many",
         "write_file",
+        "replace_once",
         "edit_file",
         "run_test",
         "list_files",

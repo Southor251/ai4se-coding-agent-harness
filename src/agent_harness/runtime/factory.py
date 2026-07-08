@@ -16,6 +16,7 @@ from agent_harness.tools.builtin.git_diff import GitDiffTool
 from agent_harness.tools.builtin.list_files import ListFilesTool
 from agent_harness.tools.builtin.read_many import ReadManyTool
 from agent_harness.tools.builtin.read_file import ReadFileTool
+from agent_harness.tools.builtin.replace_once import ReplaceOnceTool
 from agent_harness.tools.builtin.run_test import RunTestTool
 from agent_harness.tools.builtin.search_text import SearchTextTool
 from agent_harness.tools.builtin.write_file import WriteFileTool
@@ -67,6 +68,7 @@ def _default_safe_tools() -> ToolRegistry:
     registry.register(SearchTextTool())
     registry.register(GitDiffTool())
     registry.register(WriteFileTool())
+    registry.register(ReplaceOnceTool())
     registry.register(EditFileTool())
     registry.register(RunTestTool())
     return registry

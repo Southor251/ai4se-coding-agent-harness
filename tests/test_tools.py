@@ -12,6 +12,7 @@ from agent_harness.tools.builtin.list_files import ListFilesTool
 from agent_harness.tools.builtin.search_text import SearchTextTool
 from agent_harness.tools.builtin.read_many import ReadManyTool
 from agent_harness.tools.builtin.git_diff import GitDiffTool
+from agent_harness.tools.builtin.replace_once import ReplaceOnceTool
 from unittest.mock import patch
 
 
@@ -173,6 +174,27 @@ def test_git_diff_tool_returns_diff(tmp_path):
     assert "+new" in result.output
 
 
+def test_replace_once_tool_replaces_single_match(tmp_path):
+    target = tmp_path / "note.txt"
+    target.write_text("old content", encoding="utf-8")
+
+    result = ReplaceOnceTool().run(path=str(target), old="old", new="new")
+
+    assert result.success
+    assert target.read_text(encoding="utf-8") == "new content"
+
+
+def test_replace_once_tool_rejects_multiple_matches(tmp_path):
+    target = tmp_path / "note.txt"
+    target.write_text("old old", encoding="utf-8")
+
+    result = ReplaceOnceTool().run(path=str(target), old="old", new="new")
+
+    assert not result.success
+    assert "Expected exactly one match" in result.error
+    assert target.read_text(encoding="utf-8") == "old old"
+
+
 def test_builtin_tools_expose_argument_schemas():
     assert ReadFileTool().args_schema == {"path": "File path to read"}
     assert WriteFileTool().args_schema == {
@@ -201,4 +223,9 @@ def test_builtin_tools_expose_argument_schemas():
     assert GitDiffTool().args_schema == {
         "path": "Repository path",
         "target": "Optional file or directory path to diff",
+    }
+    assert ReplaceOnceTool().args_schema == {
+        "path": "File path to edit",
+        "old": "Exact text expected once",
+        "new": "Replacement text",
     }
