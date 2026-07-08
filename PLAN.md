@@ -230,8 +230,9 @@ make web       # 启动 Agent Loop Theater
 - Structured `done` actions now support `answer` for clean final output.
 - Fake OpenAI client e2e now verifies read/write/run_test/done.answer through the governed runtime.
 - HITL approve can now continue a saved-context run with `agent-harness hitl approve --continue`.
+- Default runtime now includes safe read-only browsing tools `list_files` and `search_text`.
 - `run_shell` remains outside the default governed runtime tool registry.
-- Latest verification: `149 passed`, ruff passed, CLI run/list smoke passed.
+- Latest verification: `151 passed`, ruff passed, CLI run/list smoke passed.
 - Secret/TODO scan found only API-key documentation and fake test credential references.
 
 The sandbox recovery pass implemented the deterministic harness kernel described in `docs/superpowers/plans/2026-07-07-harness-recovery-and-kernel-redesign.md`.

@@ -8,6 +8,8 @@ from agent_harness.tools.builtin.write_file import WriteFileTool
 from agent_harness.tools.builtin.edit_file import EditFileTool
 from agent_harness.tools.builtin.run_shell import RunShellTool
 from agent_harness.tools.builtin.run_test import RunTestTool
+from agent_harness.tools.builtin.list_files import ListFilesTool
+from agent_harness.tools.builtin.search_text import SearchTextTool
 from unittest.mock import patch
 
 
@@ -120,6 +122,28 @@ def test_run_test_uses_return_code_for_success():
     assert not result.success
 
 
+def test_list_files_tool_lists_relative_files(tmp_path):
+    (tmp_path / "a.txt").write_text("a", encoding="utf-8")
+    (tmp_path / "nested").mkdir()
+    (tmp_path / "nested" / "b.txt").write_text("b", encoding="utf-8")
+
+    result = ListFilesTool().run(path=str(tmp_path))
+
+    assert result.success
+    assert "a.txt" in result.output
+    assert "nested/b.txt" in result.output
+
+
+def test_search_text_tool_finds_matches(tmp_path):
+    (tmp_path / "a.txt").write_text("alpha\nbeta\n", encoding="utf-8")
+    (tmp_path / "b.txt").write_text("gamma\n", encoding="utf-8")
+
+    result = SearchTextTool().run(path=str(tmp_path), query="alpha")
+
+    assert result.success
+    assert "a.txt:1:alpha" in result.output
+
+
 def test_builtin_tools_expose_argument_schemas():
     assert ReadFileTool().args_schema == {"path": "File path to read"}
     assert WriteFileTool().args_schema == {
@@ -132,3 +156,12 @@ def test_builtin_tools_expose_argument_schemas():
         "new": "Replacement text",
     }
     assert RunTestTool().args_schema == {"pattern": "Pytest path or test pattern"}
+    assert ListFilesTool().args_schema == {
+        "path": "Directory path to list",
+        "max_files": "Maximum number of files to return",
+    }
+    assert SearchTextTool().args_schema == {
+        "path": "Directory or file path to search",
+        "query": "Literal text to search for",
+        "max_matches": "Maximum number of matches to return",
+    }

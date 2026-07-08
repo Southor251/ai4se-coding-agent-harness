@@ -126,6 +126,11 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Added `approve_execute_and_continue` to execute an approved action, inject the tool result into context, and continue the agent loop.
   - Added `agent-harness hitl approve --continue`.
 
+- current read-only-tools slice
+  - Added `list_files` and `search_text` as safe default runtime tools.
+  - Both tools expose argument schemas for API-backed action generation.
+  - `run_shell` remains excluded from the default governed runtime.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -137,7 +142,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `149 passed`
+- `151 passed`
 - `All checks passed!`
 - CLI smoke: `agent-harness run "say done" --profile config/personal-harness.yaml --trace .harness/runs/latest.jsonl`
 - CLI smoke: `agent-harness hitl list --store .harness/hitl/requests.json`

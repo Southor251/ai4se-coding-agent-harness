@@ -12,8 +12,10 @@ from agent_harness.llm.openai import OpenAILLM
 from agent_harness.memory.project import ProjectMemory
 from agent_harness.models import AgentAction, PermissionRule
 from agent_harness.tools.builtin.edit_file import EditFileTool
+from agent_harness.tools.builtin.list_files import ListFilesTool
 from agent_harness.tools.builtin.read_file import ReadFileTool
 from agent_harness.tools.builtin.run_test import RunTestTool
+from agent_harness.tools.builtin.search_text import SearchTextTool
 from agent_harness.tools.builtin.write_file import WriteFileTool
 from agent_harness.tools.registry import ToolRegistry
 from agent_harness.trace.store import TraceStore
@@ -58,6 +60,8 @@ def build_harness(
 def _default_safe_tools() -> ToolRegistry:
     registry = ToolRegistry()
     registry.register(ReadFileTool())
+    registry.register(ListFilesTool())
+    registry.register(SearchTextTool())
     registry.register(WriteFileTool())
     registry.register(EditFileTool())
     registry.register(RunTestTool())

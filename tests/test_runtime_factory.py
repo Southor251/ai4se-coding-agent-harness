@@ -55,7 +55,9 @@ def test_build_harness_registers_default_safe_tools():
 
     tool_names = {tool.name for tool in harness.tools.list()}
 
-    assert {"read_file", "write_file", "edit_file", "run_test"}.issubset(tool_names)
+    assert {"read_file", "write_file", "edit_file", "run_test", "list_files", "search_text"}.issubset(
+        tool_names
+    )
     assert "run_shell" not in tool_names
 
 
