@@ -16,6 +16,8 @@ class PermissionPolicy:
         command = str(action.args.get("command", "")) if action.args else ""
         path = str(action.args.get("path", "")) if action.args else ""
         for rule in self.rules:
+            if rule.tools and action.tool not in rule.tools:
+                continue
             matched = False
             if rule.rule_type == "command":
                 matched = re.search(rule.pattern, command, re.IGNORECASE) is not None

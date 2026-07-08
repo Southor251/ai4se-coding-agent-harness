@@ -86,6 +86,7 @@ def _permission_policy(config: HarnessConfig) -> PermissionPolicy | None:
                 pattern=rule["pattern"],
                 verdict=rule["verdict"],
                 rule_type=rule["rule_type"],
+                tools=rule.get("tools", []),
             )
         )
     return policy

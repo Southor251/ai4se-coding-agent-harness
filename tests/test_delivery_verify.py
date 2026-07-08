@@ -14,3 +14,4 @@ def test_delivery_verify_builds_expected_checks():
     ]
     assert checks[0].command[1:3] == ["-m", "pytest"]
     assert checks[2].command[1:3] == ["-m", "agent_harness.cli.main"]
+    assert "--profile" not in checks[2].command

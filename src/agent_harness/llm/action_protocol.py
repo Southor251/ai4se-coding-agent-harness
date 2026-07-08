@@ -12,7 +12,9 @@ def parse_agent_action(text: str) -> AgentAction:
     try:
         payload = json.loads(text)
     except json.JSONDecodeError:
-        return _invalid("Expected valid JSON action object")
+        payload = _extract_json_object(text)
+        if payload is None:
+            return _invalid("Expected valid JSON action object")
 
     if not isinstance(payload, dict):
         return _invalid("Expected valid JSON object")
@@ -78,6 +80,47 @@ def _normalize_action_text(text: str) -> str:
     if opening not in {"```", "```json"}:
         return stripped
     return "\n".join(lines[1:-1]).strip()
+
+
+def _extract_json_object(text: str) -> dict[str, Any] | None:
+    for start, char in enumerate(text):
+        if char != "{":
+            continue
+        candidate = _balanced_json_candidate(text, start)
+        if candidate is None:
+            continue
+        try:
+            payload = json.loads(candidate)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict):
+            return payload
+    return None
+
+
+def _balanced_json_candidate(text: str, start: int) -> str | None:
+    depth = 0
+    in_string = False
+    escaped = False
+    for index in range(start, len(text)):
+        char = text[index]
+        if in_string:
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            continue
+        if char == '"':
+            in_string = True
+        elif char == "{":
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start : index + 1]
+    return None
 
 
 def _format_tool_details(menu: list[dict]) -> str:

@@ -64,7 +64,7 @@ python scripts/verify_delivery.py
 
 The final sandbox verification for this recovery pass was:
 
-- `161 passed`
+- `168 passed`
 - `All checks passed!`
 
 ## Run Demos
@@ -145,6 +145,7 @@ Model responses must be exactly one JSON object:
 ```
 
 Invalid JSON or malformed actions are fed back into the loop as an invalid-action observation.
+For R1-style reasoning models, the parser can extract the JSON action from responses shaped like `<think>...</think>{...}`.
 
 ## Trace Theater
 

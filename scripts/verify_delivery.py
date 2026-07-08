@@ -22,8 +22,6 @@ def build_checks() -> list[Check]:
                 "agent_harness.cli.main",
                 "run",
                 "say done",
-                "--profile",
-                "config/personal-harness.yaml",
                 "--trace",
                 ".harness/runs/latest.jsonl",
             ],

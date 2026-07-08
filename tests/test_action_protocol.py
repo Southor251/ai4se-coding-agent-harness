@@ -21,6 +21,17 @@ def test_parse_fenced_json_action():
     assert action.answer == "finished"
 
 
+def test_parse_reasoning_wrapped_json_action():
+    action = parse_agent_action(
+        '<think>Need to read the file first.</think>\n'
+        '{"type": "call_tool", "tool": "read_file", "args": {"path": "README.md"}}'
+    )
+
+    assert action.type == "call_tool"
+    assert action.tool == "read_file"
+    assert action.args == {"path": "README.md"}
+
+
 def test_parse_call_tool_action_json():
     action = parse_agent_action(
         '{"type": "call_tool", "tool": "read_file", "args": {"path": "README.md"}}'

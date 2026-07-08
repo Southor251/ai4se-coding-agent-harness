@@ -14,7 +14,7 @@ python scripts/verify_delivery.py
 
 Latest observed result:
 
-- `161 passed`
+- `168 passed`
 - ruff passed
 - CLI run smoke passed
 - HITL list smoke passed
@@ -42,7 +42,29 @@ Latest observed result:
 - Streamlit theater with task input, trace selection, trace summary, step inspection, HITL approve, deny, and approve-and-continue.
 - `agent-harness doctor` for local runtime diagnostics without printing secrets.
 - `agent-harness smoke hitl-write` for a deterministic pending write approval workflow.
+- Reasoning-wrapped JSON actions such as `<think>...</think>{...}` are parsed for R1-style OpenAI-compatible models.
 - Delivery verification script and high-confidence secret/marker scan.
+
+## Real API Smoke
+
+The configured personal profile was tested with:
+
+- provider: `openai`
+- model: `DeepSeek-R1`
+- base URL: `https://njusehub.info/v1`
+
+Read-only smoke command:
+
+```powershell
+.\.venv\Scripts\python.exe -m agent_harness.cli.main run "Read README.md and summarize it in one sentence." --profile config\personal-harness.yaml --trace .harness\runs\real-readonly-smoke.jsonl
+```
+
+Observed result:
+
+- `halt_reason=done`
+- `steps=2`
+- step 1 called `read_file` on `README.md`
+- step 2 returned a one-sentence summary
 
 ## User-Specific Setup Still Required
 

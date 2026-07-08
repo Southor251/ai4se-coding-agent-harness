@@ -1,14 +1,18 @@
 workspace_root: "."
 llm:
-  provider: mock
-  model: gpt-4
+  provider: openai
+  model: DeepSeek-R1
   temperature: 0.2
-  base_url:
+  base_url: https://njusehub.info/v1
 permission:
   rules:
     - name: ask before writes
       pattern: .*
       verdict: ask
       rule_type: path
+      tools:
+        - write_file
+        - replace_once
+        - edit_file
 memory:
   enabled: true

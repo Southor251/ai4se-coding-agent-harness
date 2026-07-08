@@ -280,3 +280,13 @@ Remaining follow-up:
 - Updated personal setup and final status docs with the recommended real API read-only smoke and HITL write-loop smoke.
 - GitHub `main` was previously verified synchronized at `68570413c94700c39c61aede809463966781f821`; this slice should be pushed after final verification.
 - Latest verification: `python scripts/verify_delivery.py` -> `165 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.
+
+## Real API Smoke Closure - 2026-07-08
+
+- Configured `config/personal-harness.yaml` for `provider: openai`, `model: DeepSeek-R1`, and `base_url: https://njusehub.info/v1`.
+- Added hidden credential input via `agent-harness credentials update --prompt`.
+- Added parser support for R1-style reasoning-wrapped JSON actions.
+- Added optional `PermissionRule.tools` filtering and limited personal write approval rules to `write_file`, `replace_once`, and `edit_file`.
+- Updated `scripts/verify_delivery.py` so repeatable delivery checks use mock config rather than the real personal API profile.
+- Real read-only smoke succeeded with `halt_reason=done steps=2`.
+- Latest verification: `python scripts/verify_delivery.py` -> `168 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.

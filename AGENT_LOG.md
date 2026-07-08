@@ -204,3 +204,24 @@ Observed result:
 - Remaining boundary:
   - User still needs to configure their real provider/key locally and run the read-only smoke plus HITL write smoke against that provider.
   - Streamlit remains the current usable theater; full React/FastAPI GUI is deferred until the core workflow has real-provider validation.
+
+## 2026-07-08 Real API Read-Only Smoke
+
+- Configured `config/personal-harness.yaml` for the user's OpenAI-compatible endpoint:
+  - provider: `openai`
+  - model: `DeepSeek-R1`
+  - base_url: `https://njusehub.info/v1`
+- User stored the API key through `agent-harness credentials update --prompt`; the key was not printed or committed.
+- Initial `doctor` in normal sandbox could not read keyring, but escalated `doctor` reported `credential: configured`.
+- First real API run timed out because DeepSeek-R1 returned `<think>...</think>` reasoning before the JSON action, and the strict parser rejected the response as invalid.
+- Added action protocol support for extracting the first valid JSON object from reasoning-wrapped responses while preserving invalid-action handling when no JSON exists.
+- The first real run also showed that the old `ask before writes` path rule matched read tools. Added optional `PermissionRule.tools` filtering and updated the personal profile so only `write_file`, `replace_once`, and `edit_file` require approval.
+- Updated `scripts/verify_delivery.py` so delivery verification uses the default mock config and does not accidentally call the user's real API profile.
+- Real read-only smoke succeeded:
+  - command: `agent-harness run "Read README.md and summarize it in one sentence." --profile config/personal-harness.yaml --trace .harness/runs/real-readonly-smoke.jsonl`
+  - result: `halt_reason=done steps=2`
+  - step 1: `read_file` on `README.md`
+  - step 2: one-sentence `done.answer`
+- Verification after fixes:
+  - targeted tests: `23 passed`
+  - full delivery: `168 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.

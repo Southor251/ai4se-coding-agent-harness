@@ -59,6 +59,7 @@ class PermissionRule:
     pattern: str
     verdict: Literal["allow", "ask", "deny"]
     rule_type: Literal["path", "command", "regex"]
+    tools: list[str] = field(default_factory=list)
 
 
 @dataclass

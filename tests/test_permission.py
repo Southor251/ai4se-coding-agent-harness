@@ -60,3 +60,22 @@ def test_ask():
     p.add_rule(PermissionRule(name="ask review", pattern="review-command", verdict="ask", rule_type="command"))
     action = AgentAction(type="call_tool", tool="run_shell", args={"command": "review-command file"})
     assert p.check(action) == "ask"
+
+
+def test_rule_can_be_limited_to_specific_tools():
+    p = PermissionPolicy()
+    p.add_rule(
+        PermissionRule(
+            name="ask writes only",
+            pattern=".*",
+            verdict="ask",
+            rule_type="path",
+            tools=["write_file", "replace_once", "edit_file"],
+        )
+    )
+
+    read_action = AgentAction(type="call_tool", tool="read_file", args={"path": "README.md"})
+    write_action = AgentAction(type="call_tool", tool="write_file", args={"path": "README.md"})
+
+    assert p.check(read_action) == "allow"
+    assert p.check(write_action) == "ask"
