@@ -8,6 +8,7 @@ VALID_TYPES = {"call_tool", "done", "take_note"}
 
 
 def parse_agent_action(text: str) -> AgentAction:
+    text = _normalize_action_text(text)
     try:
         payload = json.loads(text)
     except json.JSONDecodeError:
@@ -64,6 +65,19 @@ def _parse_done(payload: dict[str, Any]) -> AgentAction:
 
 def _invalid(message: str) -> AgentAction:
     return AgentAction(type="invalid", args={"error": message})
+
+
+def _normalize_action_text(text: str) -> str:
+    stripped = text.strip()
+    if not stripped.startswith("```") or not stripped.endswith("```"):
+        return stripped
+    lines = stripped.splitlines()
+    if len(lines) < 3:
+        return stripped
+    opening = lines[0].strip().lower()
+    if opening not in {"```", "```json"}:
+        return stripped
+    return "\n".join(lines[1:-1]).strip()
 
 
 def _format_tool_details(menu: list[dict]) -> str:

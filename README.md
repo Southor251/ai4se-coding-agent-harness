@@ -12,6 +12,7 @@ The current implementation focuses on deterministic orchestration around an inje
 - Runtime factory registers safe default tools: `read_file`, `write_file`, `edit_file`, and `run_test`. `run_shell` is not registered by default.
 - Tool menus include argument schemas so API-backed models can emit correct JSON action fields.
 - `done` actions can carry an `answer` field for user-facing final output.
+- OpenAI-compatible runtime has a fake-client end-to-end test covering read, write, test, trace, feedback, and `done.answer`.
 - Governance checks for workspace scope, sensitive paths, permission deny, and permission ask.
 - Human-in-the-loop request objects for ask-mode decisions.
 - Runtime config can load permission rules and create HITL requests for ask-mode tool actions.
@@ -57,7 +58,7 @@ python -m ruff check src/ tests/ demo/
 
 The final sandbox verification for this recovery pass was:
 
-- `144 passed`
+- `146 passed`
 - `All checks passed!`
 
 ## Run Demos

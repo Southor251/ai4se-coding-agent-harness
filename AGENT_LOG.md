@@ -117,6 +117,10 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Structured `done` actions now support an optional `answer` field.
   - The agent loop returns the `answer` field as user-facing output when present, while preserving old raw-text behavior for legacy mock responses.
 
+- current API e2e slice
+  - Added a fake OpenAI client end-to-end runtime test for read, write, run_test, trace, feedback, and structured final answer.
+  - Added strict fenced JSON action compatibility for complete JSON code-fence responses.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -128,7 +132,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `144 passed`
+- `146 passed`
 - `All checks passed!`
 - CLI smoke: `agent-harness run "say done" --profile config/personal-harness.yaml --trace .harness/runs/latest.jsonl`
 - CLI smoke: `agent-harness hitl list --store .harness/hitl/requests.json`
