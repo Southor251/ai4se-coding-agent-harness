@@ -46,7 +46,7 @@ memory:
 Store the API key through the credential manager or an environment variable. Do not put secrets in YAML files.
 
 ```bash
-agent-harness credentials update <secret>
+agent-harness credentials update --prompt
 agent-harness credentials show
 ```
 

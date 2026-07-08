@@ -92,7 +92,7 @@ agent-harness hitl approve <request_id> --store .harness/hitl/requests.json
 agent-harness hitl approve <request_id> --continue --store .harness/hitl/requests.json
 agent-harness hitl deny <request_id> --store .harness/hitl/requests.json
 agent-harness credentials show
-agent-harness credentials update <secret>
+agent-harness credentials update --prompt
 agent-harness credentials clear
 ```
 

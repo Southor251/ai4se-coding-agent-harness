@@ -1,3 +1,5 @@
+import getpass
+
 from agent_harness.credentials.manager import CredentialManager
 
 
@@ -9,7 +11,8 @@ def add_credentials_parser(subparsers):
     show.set_defaults(handler=_show)
 
     update = credential_subparsers.add_parser("update", help="update credential")
-    update.add_argument("secret")
+    update.add_argument("secret", nargs="?")
+    update.add_argument("--prompt", action="store_true", help="prompt for the secret without echoing it")
     update.set_defaults(handler=_update)
 
     clear = credential_subparsers.add_parser("clear", help="clear credential")
@@ -22,7 +25,11 @@ def _show(args) -> int:
 
 
 def _update(args) -> int:
-    CredentialManager().update(args.secret)
+    secret = getpass.getpass("API key: ") if args.prompt else args.secret
+    if not secret:
+        print("missing secret; pass a value or use --prompt")
+        return 1
+    CredentialManager().update(secret)
     print("configured")
     return 0
 
@@ -31,4 +38,3 @@ def _clear(args) -> int:
     CredentialManager().clear()
     print("not configured")
     return 0
-
