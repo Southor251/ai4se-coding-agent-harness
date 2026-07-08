@@ -233,8 +233,9 @@ make web       # 启动 Agent Loop Theater
 - Default runtime now includes safe read-only browsing tools `list_files` and `search_text`.
 - Default runtime now includes `read_many` and read-only `git_diff`.
 - Default runtime now includes safer single-match `replace_once`.
+- Streamlit HITL controls now support approve-and-continue for saved-context requests.
 - `run_shell` remains outside the default governed runtime tool registry.
-- Latest verification: `155 passed`, ruff passed, CLI run/list smoke passed.
+- Latest verification: `156 passed`, ruff passed, CLI run/list smoke passed.
 - Secret/TODO scan found only API-key documentation and fake test credential references.
 
 The sandbox recovery pass implemented the deterministic harness kernel described in `docs/superpowers/plans/2026-07-07-harness-recovery-and-kernel-redesign.md`.

@@ -56,6 +56,7 @@ The Dockerfile also provides a containerized verification path.
 - Safe read-only browsing tools `list_files` and `search_text` are registered by default without enabling shell execution.
 - `read_many` and `git_diff` extend project inspection while still avoiding default shell access.
 - `replace_once` provides safer single-match edits than broad replace operations.
+- Web HITL approval can now continue saved-context tasks through the shared service layer.
 
 ## Evidence
 
@@ -63,7 +64,7 @@ The implementation was developed with failing tests first for the behavioral fix
 
 Latest observed results:
 
-- `155 passed`
+- `156 passed`
 - `All checks passed!`
 - CLI smoke for `run` and `hitl list` passed.
 - Secret/TODO scan produced only expected API-key documentation and fake test-token references.

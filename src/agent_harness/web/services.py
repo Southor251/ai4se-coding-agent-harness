@@ -1,7 +1,7 @@
 from agent_harness.cli.run import run_goal
 from agent_harness.config.loader import load_config_with_profile
 from agent_harness.governance.hitl import HITLManager
-from agent_harness.hitl.resume import approve_and_execute
+from agent_harness.hitl.resume import approve_and_execute, approve_execute_and_continue
 from agent_harness.hitl.store import HITLStore
 from agent_harness.models import HITLRequest
 from agent_harness.runtime.factory import build_harness
@@ -56,6 +56,17 @@ def approve_hitl_request(
     config = load_config_with_profile(config_path, profile_path)
     harness = build_harness(config, hitl_store_path=store_path)
     return approve_and_execute(harness, request_id)
+
+
+def approve_and_continue_hitl_request(
+    request_id: str,
+    config_path: str = DEFAULT_CONFIG_PATH,
+    profile_path: str | None = None,
+    store_path: str = DEFAULT_HITL_STORE_PATH,
+) -> RunResult:
+    config = load_config_with_profile(config_path, profile_path)
+    harness = build_harness(config, hitl_store_path=store_path)
+    return approve_execute_and_continue(harness, request_id)
 
 
 def deny_hitl_request(request_id: str, store_path: str = DEFAULT_HITL_STORE_PATH) -> HITLRequest:

@@ -2,6 +2,7 @@ from agent_harness.governance.hitl import HITLManager
 from agent_harness.hitl.store import HITLStore
 from agent_harness.models import AgentAction
 from agent_harness.web.services import (
+    approve_and_continue_hitl_request,
     approve_hitl_request,
     deny_hitl_request,
     list_hitl_requests,
@@ -61,5 +62,37 @@ def test_approve_hitl_request_executes_pending_action(tmp_path):
     result = approve_hitl_request(request.id, config_path=str(config_path), store_path=str(store_path))
 
     assert result.success is True
+    assert target.read_text(encoding="utf-8") == "hello"
+    assert HITLStore(store_path).load()[0].status == "approved"
+
+
+def test_approve_and_continue_hitl_request_resumes_task(tmp_path):
+    store_path = tmp_path / "requests.json"
+    target = tmp_path / "note.txt"
+    manager = HITLManager(store=HITLStore(store_path))
+    request = manager.create_request(
+        AgentAction(
+            type="call_tool",
+            tool="write_file",
+            args={"path": str(target), "content": "hello"},
+        ),
+        "review",
+        context=[
+            {"role": "system", "content": "You are a coding agent."},
+            {"role": "user", "content": "write note"},
+        ],
+        step=1,
+    )
+    config_path = tmp_path / "config.yaml"
+    config_path.write_text(f"workspace_root: {tmp_path}\nllm:\n  provider: mock\n", encoding="utf-8")
+
+    result = approve_and_continue_hitl_request(
+        request.id,
+        config_path=str(config_path),
+        store_path=str(store_path),
+    )
+
+    assert result.halt_reason == "done"
+    assert result.answer == "done"
     assert target.read_text(encoding="utf-8") == "hello"
     assert HITLStore(store_path).load()[0].status == "approved"

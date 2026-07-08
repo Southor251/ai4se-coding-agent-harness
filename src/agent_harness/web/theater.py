@@ -47,6 +47,7 @@ def main(path: str = ".harness/runs/latest.jsonl"):
         DEFAULT_CONFIG_PATH,
         DEFAULT_HITL_STORE_PATH,
         DEFAULT_PROFILE_PATH,
+        approve_and_continue_hitl_request,
         approve_hitl_request,
         deny_hitl_request,
         list_hitl_requests,
@@ -105,7 +106,7 @@ def main(path: str = ".harness/runs/latest.jsonl"):
     else:
         st.info("No HITL requests found.")
     request_id = st.text_input("Request id")
-    approve_col, deny_col = st.columns(2)
+    approve_col, continue_col, deny_col = st.columns(3)
     with approve_col:
         if st.button("Approve") and request_id:
             approval = approve_hitl_request(
@@ -115,6 +116,22 @@ def main(path: str = ".harness/runs/latest.jsonl"):
                 store_path=hitl_store_path,
             )
             st.write({"success": approval.success, "output": approval.output, "error": approval.error})
+    with continue_col:
+        if st.button("Approve + Continue") and request_id:
+            continued = approve_and_continue_hitl_request(
+                request_id,
+                config_path=config_path,
+                profile_path=profile_path or None,
+                store_path=hitl_store_path,
+            )
+            st.session_state["run_result"] = continued
+            st.write(
+                {
+                    "answer": continued.answer,
+                    "halt_reason": continued.halt_reason,
+                    "steps": continued.steps,
+                }
+            )
     with deny_col:
         if st.button("Deny") and request_id:
             denied = deny_hitl_request(request_id, hitl_store_path)

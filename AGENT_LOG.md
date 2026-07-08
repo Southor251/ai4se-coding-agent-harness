@@ -140,6 +140,10 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Added `replace_once` for safer exact single-match edits.
   - Registered `replace_once` in the default governed runtime.
 
+- current Web HITL-continue slice
+  - Added `approve_and_continue_hitl_request` to the Web service layer.
+  - Streamlit theater now exposes an `Approve + Continue` HITL action.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -151,7 +155,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `155 passed`
+- `156 passed`
 - `All checks passed!`
 - CLI smoke: `agent-harness run "say done" --profile config/personal-harness.yaml --trace .harness/runs/latest.jsonl`
 - CLI smoke: `agent-harness hitl list --store .harness/hitl/requests.json`
