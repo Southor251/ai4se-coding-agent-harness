@@ -182,3 +182,25 @@ Observed result:
 - Improve the Streamlit theater styling and replay ergonomics.
 - Add real provider configuration and model selection once target provider/version requirements are fixed.
 - Expand personal-harness features such as persistent project memory, patch planning, and richer tool permissions.
+
+## 2026-07-08 Completion Gap Closure
+
+- Added `agent_harness.cli.doctor` and registered `agent-harness doctor`.
+  - Reports config/profile, workspace, provider, model, base URL, credential status, tool count, `run_shell` status, permission rule count, memory, and max steps.
+  - Does not print credential values.
+- Added `agent_harness.cli.smoke` and registered `agent-harness smoke hitl-write`.
+  - Creates a deterministic pending `write_file` request under a controlled smoke workspace.
+  - Confirms the target file is not written before approval.
+  - Prints a copy-paste `agent-harness hitl approve <id> --continue --store <path>` command.
+- Updated `README.md`, `docs/personal_setup.md`, and `docs/final_status.md`.
+  - Added `doctor`, HITL smoke, real API read-only smoke, and reliable Windows Streamlit startup commands.
+- Added implementation plan `docs/superpowers/plans/2026-07-08-completion-gap-closure.md`.
+- Verification:
+  - `python -m pytest -q tests/test_cli_doctor.py tests/test_cli_smoke.py` -> `4 passed`
+  - `agent-harness doctor --profile config/personal-harness.yaml` -> reports `run_shell: disabled`
+  - `agent-harness smoke hitl-write ...` -> creates pending request and does not write the target file
+  - `python -m ruff check src/ tests/ demo/` -> `All checks passed!`
+  - `python scripts/verify_delivery.py` -> `165 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed
+- Remaining boundary:
+  - User still needs to configure their real provider/key locally and run the read-only smoke plus HITL write smoke against that provider.
+  - Streamlit remains the current usable theater; full React/FastAPI GUI is deferred until the core workflow has real-provider validation.

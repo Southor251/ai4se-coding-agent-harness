@@ -50,10 +50,24 @@ agent-harness credentials update <secret>
 agent-harness credentials show
 ```
 
+Check the active runtime before running a real task:
+
+```bash
+agent-harness doctor --profile config/personal-harness.yaml
+```
+
+The doctor output should show your provider, model, base URL, `credential: configured`, and `run_shell: disabled`. It never prints the key value.
+
 ## 4. Run A Task
 
 ```bash
 agent-harness run "say done" --profile config/personal-harness.yaml --trace .harness/runs/latest.jsonl
+```
+
+For the first real API smoke, use a read-only goal against a small workspace:
+
+```bash
+agent-harness run "Read README.md and summarize it in one sentence." --profile config/personal-harness.yaml --trace .harness/runs/real-readonly-smoke.jsonl
 ```
 
 The model must return one JSON action at a time:
@@ -92,6 +106,14 @@ Deny without executing:
 agent-harness hitl deny <request_id> --store .harness/hitl/requests.json
 ```
 
+You can create a deterministic pending write request without using a real API:
+
+```bash
+agent-harness smoke hitl-write --workspace .harness/smoke-workspace --store .harness/hitl/smoke-requests.json --trace .harness/runs/hitl-write-smoke.jsonl
+```
+
+The command prints a `pending_request` id and a copy-paste `approve_command`. The target file should not exist until you approve the request.
+
 ## 6. Use The Web Console
 
 ```bash
@@ -99,6 +121,23 @@ streamlit run src/agent_harness/web/theater.py
 ```
 
 The Web console can run goals, select trace history from `.harness/runs`, inspect trace steps, and approve or deny HITL requests.
+
+On Windows, prefer this explicit startup command:
+
+```powershell
+.\.venv\Scripts\python.exe -m streamlit run src\agent_harness\web\theater.py --server.port 8501 --server.address 127.0.0.1 --server.headless true --browser.gatherUsageStats false --global.developmentMode false
+```
+
+For a server that stays alive after the launching command returns, open a visible PowerShell window:
+
+```powershell
+Start-Process -FilePath powershell.exe -ArgumentList @(
+  '-NoExit','-ExecutionPolicy','Bypass','-Command',
+  'cd "<repo>"; .\.venv\Scripts\python.exe -m streamlit run src\agent_harness\web\theater.py --server.port 8501 --server.address 127.0.0.1 --server.headless true --browser.gatherUsageStats false --global.developmentMode false'
+) -WindowStyle Normal
+```
+
+Then open `http://127.0.0.1:8501`.
 
 ## Safety Defaults
 

@@ -84,7 +84,9 @@ agent-harness --help
 agent-harness run "say done" --trace .harness/runs/latest.jsonl
 agent-harness run "say done" --profile config/personal-harness.yaml
 agent-harness demo
+agent-harness doctor --profile config/personal-harness.yaml
 agent-harness web --trace trace.jsonl
+agent-harness smoke hitl-write
 agent-harness hitl list --store .harness/hitl/requests.json
 agent-harness hitl approve <request_id> --store .harness/hitl/requests.json
 agent-harness hitl approve <request_id> --continue --store .harness/hitl/requests.json
@@ -95,6 +97,10 @@ agent-harness credentials clear
 ```
 
 Credential values are never printed. The manager tries keyring first and falls back to a local `.env` file. Do not commit `.env`; it is ignored by `.gitignore`.
+
+`agent-harness doctor` checks the active profile without printing secrets. It reports the workspace, provider, model, base URL, credential status, default tools, whether `run_shell` is enabled, permission rule count, memory status, and max step limit.
+
+`agent-harness smoke hitl-write` creates a deterministic pending write request in a controlled smoke workspace. It is useful for checking the HITL queue before using a real API-backed task.
 
 ## API Provider Config
 
@@ -147,6 +153,23 @@ Trace loading is implemented in `agent_harness.web.theater.load_trace_for_displa
 ```bash
 streamlit run src/agent_harness/web/theater.py
 ```
+
+On Windows, this explicit command avoids common local startup issues around host binding and Streamlit telemetry config:
+
+```powershell
+.\.venv\Scripts\python.exe -m streamlit run src\agent_harness\web\theater.py --server.port 8501 --server.address 127.0.0.1 --server.headless true --browser.gatherUsageStats false --global.developmentMode false
+```
+
+For a long-running local session, start it in a visible PowerShell window so closing the Codex tool command does not stop the server:
+
+```powershell
+Start-Process -FilePath powershell.exe -ArgumentList @(
+  '-NoExit','-ExecutionPolicy','Bypass','-Command',
+  'cd "<repo>"; .\.venv\Scripts\python.exe -m streamlit run src\agent_harness\web\theater.py --server.port 8501 --server.address 127.0.0.1 --server.headless true --browser.gatherUsageStats false --global.developmentMode false'
+) -WindowStyle Normal
+```
+
+Then open `http://127.0.0.1:8501`.
 
 The default Web inputs use `config/agent-harness.yaml`, `config/personal-harness.yaml`, `.harness/runs/latest.jsonl`, and `.harness/hitl/requests.json`. `agent-harness run` writes a JSONL trace to `.harness/runs/latest.jsonl` by default. Pass `--trace <path>` to choose a different run record.
 

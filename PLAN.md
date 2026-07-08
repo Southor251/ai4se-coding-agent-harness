@@ -271,3 +271,12 @@ Remaining follow-up:
 - HITL requests persist to JSON and are manageable through `agent-harness hitl list|approve|deny`.
 - Build a richer trace replay UI.
 - Add personal-harness features after course delivery requirements are locked.
+
+## Completion Gap Closure - 2026-07-08
+
+- Added `agent-harness doctor` to diagnose active config/profile, provider, model, base URL, credential status, default tools, `run_shell` status, permission rules, memory, and max steps without printing secrets.
+- Added `agent-harness smoke hitl-write` to create a deterministic pending write request in a controlled workspace, proving the HITL queue can be exercised without a real API.
+- Hardened Web startup instructions with explicit Windows Streamlit flags: `--server.address 127.0.0.1`, `--server.headless true`, `--browser.gatherUsageStats false`, and `--global.developmentMode false`.
+- Updated personal setup and final status docs with the recommended real API read-only smoke and HITL write-loop smoke.
+- GitHub `main` was previously verified synchronized at `68570413c94700c39c61aede809463966781f821`; this slice should be pushed after final verification.
+- Latest verification: `python scripts/verify_delivery.py` -> `165 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.
