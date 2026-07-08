@@ -144,6 +144,10 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Added `approve_and_continue_hitl_request` to the Web service layer.
   - Streamlit theater now exposes an `Approve + Continue` HITL action.
 
+- current Web trace-history slice
+  - Added `list_trace_runs` to the Web service layer.
+  - Streamlit theater can select existing JSONL traces from `.harness/runs`.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -155,7 +159,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `156 passed`
+- `157 passed`
 - `All checks passed!`
 - CLI smoke: `agent-harness run "say done" --profile config/personal-harness.yaml --trace .harness/runs/latest.jsonl`
 - CLI smoke: `agent-harness hitl list --store .harness/hitl/requests.json`

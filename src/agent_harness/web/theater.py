@@ -47,10 +47,12 @@ def main(path: str = ".harness/runs/latest.jsonl"):
         DEFAULT_CONFIG_PATH,
         DEFAULT_HITL_STORE_PATH,
         DEFAULT_PROFILE_PATH,
+        DEFAULT_TRACE_DIR,
         approve_and_continue_hitl_request,
         approve_hitl_request,
         deny_hitl_request,
         list_hitl_requests,
+        list_trace_runs,
         run_task,
     )
 
@@ -61,6 +63,11 @@ def main(path: str = ".harness/runs/latest.jsonl"):
         config_path = st.text_input("Config path", value=DEFAULT_CONFIG_PATH)
         profile_path = st.text_input("Profile path", value=DEFAULT_PROFILE_PATH)
         trace_path = st.text_input("Trace path", value=path)
+        trace_runs = list_trace_runs(DEFAULT_TRACE_DIR)
+        if trace_runs:
+            selected_trace = st.selectbox("Trace history", trace_runs, format_func=lambda row: row["name"])
+            if selected_trace:
+                trace_path = selected_trace["path"]
         hitl_store_path = st.text_input("HITL store", value=DEFAULT_HITL_STORE_PATH)
         if st.button("Run"):
             result = run_task(

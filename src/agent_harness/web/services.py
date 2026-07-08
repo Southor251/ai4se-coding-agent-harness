@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from agent_harness.cli.run import run_goal
 from agent_harness.config.loader import load_config_with_profile
 from agent_harness.governance.hitl import HITLManager
@@ -14,6 +16,7 @@ from agent_harness.web.theater import summarize_trace
 DEFAULT_CONFIG_PATH = "config/agent-harness.yaml"
 DEFAULT_PROFILE_PATH = "config/personal-harness.yaml"
 DEFAULT_TRACE_PATH = ".harness/runs/latest.jsonl"
+DEFAULT_TRACE_DIR = ".harness/runs"
 DEFAULT_HITL_STORE_PATH = ".harness/hitl/requests.json"
 
 
@@ -28,6 +31,23 @@ def run_task(
 
 def trace_summary(trace_path: str = DEFAULT_TRACE_PATH) -> dict:
     return summarize_trace(TraceStore.load(trace_path))
+
+
+def list_trace_runs(trace_dir: str = DEFAULT_TRACE_DIR) -> list[dict]:
+    root = Path(trace_dir)
+    if not root.exists():
+        return []
+    rows = []
+    for path in sorted(root.glob("*.jsonl"), key=lambda item: item.stat().st_mtime, reverse=True):
+        rows.append(
+            {
+                "name": path.name,
+                "path": str(path),
+                "updated_at": path.stat().st_mtime,
+                "summary": trace_summary(str(path)),
+            }
+        )
+    return rows
 
 
 def list_hitl_requests(store_path: str = DEFAULT_HITL_STORE_PATH) -> list[dict]:

@@ -20,6 +20,7 @@ The current implementation focuses on deterministic orchestration around an inje
 - HITL approval can continue a paused run when the request has saved context: `agent-harness hitl approve <id> --continue`.
 - Streamlit theater can run a goal, show trace summaries, inspect step records, and approve or deny HITL requests through shared service helpers.
 - Streamlit HITL controls can approve and continue saved-context requests.
+- Streamlit sidebar can select existing JSONL traces from `.harness/runs`.
 - Optional project memory stores append-only notes under `.harness/memory/project.md`.
 - Feedback classification from tool results and feedback injection into the next loop context.
 - JSONL trace recording and loading.
@@ -60,7 +61,7 @@ python -m ruff check src/ tests/ demo/
 
 The final sandbox verification for this recovery pass was:
 
-- `156 passed`
+- `157 passed`
 - `All checks passed!`
 
 ## Run Demos

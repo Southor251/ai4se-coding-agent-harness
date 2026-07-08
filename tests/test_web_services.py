@@ -6,6 +6,7 @@ from agent_harness.web.services import (
     approve_hitl_request,
     deny_hitl_request,
     list_hitl_requests,
+    list_trace_runs,
     run_task,
     trace_summary,
 )
@@ -28,6 +29,19 @@ def test_trace_summary_reads_trace_file(tmp_path):
     summary = trace_summary(str(trace_path))
 
     assert summary["steps"] == 1
+
+
+def test_list_trace_runs_returns_jsonl_summaries(tmp_path):
+    first = tmp_path / "first.jsonl"
+    second = tmp_path / "second.jsonl"
+    run_task("say done", trace_path=str(first))
+    run_task("say done", trace_path=str(second))
+
+    rows = list_trace_runs(str(tmp_path))
+
+    assert {row["name"] for row in rows} == {"first.jsonl", "second.jsonl"}
+    assert all(row["summary"]["steps"] == 1 for row in rows)
+    assert all(row["path"].endswith(".jsonl") for row in rows)
 
 
 def test_list_and_deny_hitl_requests(tmp_path):

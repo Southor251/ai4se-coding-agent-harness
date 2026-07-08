@@ -57,6 +57,7 @@ The Dockerfile also provides a containerized verification path.
 - `read_many` and `git_diff` extend project inspection while still avoiding default shell access.
 - `replace_once` provides safer single-match edits than broad replace operations.
 - Web HITL approval can now continue saved-context tasks through the shared service layer.
+- Web trace history is service-backed and can summarize JSONL runs without depending on Streamlit.
 
 ## Evidence
 
@@ -64,7 +65,7 @@ The implementation was developed with failing tests first for the behavioral fix
 
 Latest observed results:
 
-- `156 passed`
+- `157 passed`
 - `All checks passed!`
 - CLI smoke for `run` and `hitl list` passed.
 - Secret/TODO scan produced only expected API-key documentation and fake test-token references.
