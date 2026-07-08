@@ -121,6 +121,11 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Added a fake OpenAI client end-to-end runtime test for read, write, run_test, trace, feedback, and structured final answer.
   - Added strict fenced JSON action compatibility for complete JSON code-fence responses.
 
+- current HITL-continue slice
+  - HITL requests now persist resume context and step.
+  - Added `approve_execute_and_continue` to execute an approved action, inject the tool result into context, and continue the agent loop.
+  - Added `agent-harness hitl approve --continue`.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -132,7 +137,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `146 passed`
+- `149 passed`
 - `All checks passed!`
 - CLI smoke: `agent-harness run "say done" --profile config/personal-harness.yaml --trace .harness/runs/latest.jsonl`
 - CLI smoke: `agent-harness hitl list --store .harness/hitl/requests.json`

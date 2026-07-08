@@ -26,6 +26,8 @@ class HITLStore:
                     created_at=item["created_at"],
                     decided_by=item.get("decided_by"),
                     resolved_at=item.get("resolved_at"),
+                    context=item.get("context"),
+                    step=item.get("step", 0),
                 )
             )
         return requests

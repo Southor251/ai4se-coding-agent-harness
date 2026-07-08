@@ -1,6 +1,6 @@
 from agent_harness.config.loader import load_config_with_profile
 from agent_harness.governance.hitl import HITLManager
-from agent_harness.hitl.resume import approve_and_execute
+from agent_harness.hitl.resume import approve_and_execute, approve_execute_and_continue
 from agent_harness.hitl.store import HITLStore
 from agent_harness.runtime.factory import build_harness
 
@@ -20,6 +20,7 @@ def add_hitl_parser(subparsers):
     approve_parser.add_argument("--config", default="config/agent-harness.yaml")
     approve_parser.add_argument("--profile", default=None)
     approve_parser.add_argument("--store", default=DEFAULT_HITL_STORE_PATH)
+    approve_parser.add_argument("--continue", action="store_true", dest="continue_run")
     approve_parser.set_defaults(handler=_approve)
 
     deny_parser = hitl_subparsers.add_parser("deny", help="deny request")
@@ -45,6 +46,14 @@ def _list(args) -> int:
 def _approve(args) -> int:
     config = load_config_with_profile(args.config, args.profile)
     harness = build_harness(config, hitl_store_path=args.store)
+    if args.continue_run:
+        result = approve_execute_and_continue(harness, args.request_id)
+        if result.halt_reason == "hitl_error" or result.halt_reason == "tool_error":
+            print(result.answer)
+            return 1
+        print(result.answer)
+        print(f"halt_reason={result.halt_reason} steps={result.steps}")
+        return 0
     result = approve_and_execute(harness, args.request_id)
     if not result.success:
         print(result.error)

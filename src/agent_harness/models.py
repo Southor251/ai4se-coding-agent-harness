@@ -49,6 +49,8 @@ class HITLRequest:
     created_at: float
     decided_by: Literal["human", "auto_deny", "timeout"] | None = None
     resolved_at: float | None = None
+    context: list[dict] | None = None
+    step: int = 0
 
 
 @dataclass

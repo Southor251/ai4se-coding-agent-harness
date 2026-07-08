@@ -21,6 +21,24 @@ def test_create_request_persists_to_store(tmp_path):
     assert reloaded[0].status == "pending"
 
 
+def test_create_request_persists_resume_context(tmp_path):
+    store_path = tmp_path / "requests.json"
+    manager = HITLManager(store=HITLStore(store_path))
+
+    request = manager.create_request(
+        AgentAction(type="call_tool", tool="write_file", args={"path": "note.txt"}),
+        "review required",
+        context=[{"role": "user", "content": "write note"}],
+        step=3,
+    )
+
+    reloaded = HITLStore(store_path).load()[0]
+
+    assert reloaded.id == request.id
+    assert reloaded.context == [{"role": "user", "content": "write note"}]
+    assert reloaded.step == 3
+
+
 def test_manager_loads_existing_requests_from_store(tmp_path):
     store_path = tmp_path / "requests.json"
     manager = HITLManager(store=HITLStore(store_path))

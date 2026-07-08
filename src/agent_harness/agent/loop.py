@@ -39,12 +39,14 @@ def _scope_target(args: dict) -> str | None:
     return None
 
 
-def agent_loop(goal: str, H: Harness) -> str:
-    H.step = 0
-    H.context = [{"role": "system", "content": H.system_prompt}]
-    H.context.append({"role": "user", "content": goal})
+def agent_loop(goal: str, H: Harness, resume: bool = False) -> str:
+    if not resume:
+        H.step = 0
+        H.context = [{"role": "system", "content": H.system_prompt}]
+        H.context.append({"role": "user", "content": goal})
     H.halt_reason = None
-    H.feedback_events = []
+    if not resume:
+        H.feedback_events = []
     answer = ""
     while H.step < H.max_steps:
         H.step += 1
@@ -129,7 +131,12 @@ def agent_loop(goal: str, H: Harness) -> str:
                             continue
                         if permission_verdict == "ask":
                             if H.hitl:
-                                H.hitl.create_request(response.action, "permission review required")
+                                H.hitl.create_request(
+                                    response.action,
+                                    "permission review required",
+                                    context=list(H.context),
+                                    step=H.step,
+                                )
                             H.context.append(
                                 {
                                     "role": "user",

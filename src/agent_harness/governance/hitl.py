@@ -12,13 +12,21 @@ class HITLManager:
         self.store = store
         self.requests: list[HITLRequest] = store.load() if store else []
 
-    def create_request(self, action: AgentAction, reason: str) -> HITLRequest:
+    def create_request(
+        self,
+        action: AgentAction,
+        reason: str,
+        context: list[dict] | None = None,
+        step: int = 0,
+    ) -> HITLRequest:
         req = HITLRequest(
             id=str(uuid.uuid4())[:8],
             action=action,
             reason=reason,
             status="pending",
             created_at=time.time(),
+            context=context,
+            step=step,
         )
         self.requests.append(req)
         self._save()

@@ -52,6 +52,7 @@ The Dockerfile also provides a containerized verification path.
 - Tool menus include argument schemas before reaching the OpenAI-compatible provider, reducing malformed real-API actions without expanding permissions.
 - Structured `done` actions can include an `answer` field, so API-backed runs have a clean user-facing final response instead of returning raw JSON.
 - Fake OpenAI client end-to-end coverage now verifies multi-step API-backed runtime execution through read/write/test tools, trace, feedback, and final answer.
+- HITL requests persist resume context and step, enabling approved actions to inject tool results and continue the agent loop.
 
 ## Evidence
 
@@ -59,7 +60,7 @@ The implementation was developed with failing tests first for the behavioral fix
 
 Latest observed results:
 
-- `146 passed`
+- `149 passed`
 - `All checks passed!`
 - CLI smoke for `run` and `hitl list` passed.
 - Secret/TODO scan produced only expected API-key documentation and fake test-token references.

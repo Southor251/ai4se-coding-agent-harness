@@ -17,6 +17,7 @@ The current implementation focuses on deterministic orchestration around an inje
 - Human-in-the-loop request objects for ask-mode decisions.
 - Runtime config can load permission rules and create HITL requests for ask-mode tool actions.
 - HITL pending requests persist to `.harness/hitl/requests.json` and can be listed, approved, or denied through `agent-harness hitl`.
+- HITL approval can continue a paused run when the request has saved context: `agent-harness hitl approve <id> --continue`.
 - Streamlit theater can run a goal, show trace summaries, inspect step records, and approve or deny HITL requests through shared service helpers.
 - Optional project memory stores append-only notes under `.harness/memory/project.md`.
 - Feedback classification from tool results and feedback injection into the next loop context.
@@ -58,7 +59,7 @@ python -m ruff check src/ tests/ demo/
 
 The final sandbox verification for this recovery pass was:
 
-- `146 passed`
+- `149 passed`
 - `All checks passed!`
 
 ## Run Demos
@@ -81,6 +82,7 @@ agent-harness demo
 agent-harness web --trace trace.jsonl
 agent-harness hitl list --store .harness/hitl/requests.json
 agent-harness hitl approve <request_id> --store .harness/hitl/requests.json
+agent-harness hitl approve <request_id> --continue --store .harness/hitl/requests.json
 agent-harness hitl deny <request_id> --store .harness/hitl/requests.json
 agent-harness credentials show
 agent-harness credentials update <secret>
