@@ -148,6 +148,10 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Added `list_trace_runs` to the Web service layer.
   - Streamlit theater can select existing JSONL traces from `.harness/runs`.
 
+- current delivery-setup slice
+  - Added `scripts/verify_delivery.py` for repeatable local verification.
+  - Added `docs/personal_setup.md` for personal API profile setup, HITL, Web, and safety defaults.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -159,7 +163,7 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `157 passed`
+- `158 passed`
 - `All checks passed!`
 - CLI smoke: `agent-harness run "say done" --profile config/personal-harness.yaml --trace .harness/runs/latest.jsonl`
 - CLI smoke: `agent-harness hitl list --store .harness/hitl/requests.json`

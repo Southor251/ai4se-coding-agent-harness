@@ -57,11 +57,12 @@ python -m pip install -e ".[dev]"
 ```bash
 python -m pytest -q
 python -m ruff check src/ tests/ demo/
+python scripts/verify_delivery.py
 ```
 
 The final sandbox verification for this recovery pass was:
 
-- `157 passed`
+- `158 passed`
 - `All checks passed!`
 
 ## Run Demos
@@ -94,6 +95,8 @@ agent-harness credentials clear
 Credential values are never printed. The manager tries keyring first and falls back to a local `.env` file. Do not commit `.env`; it is ignored by `.gitignore`.
 
 ## API Provider Config
+
+See `docs/personal_setup.md` for the full local setup and personal API profile workflow.
 
 The default config is safe and uses `mock`:
 
