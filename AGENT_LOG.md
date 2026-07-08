@@ -152,6 +152,10 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Added `scripts/verify_delivery.py` for repeatable local verification.
   - Added `docs/personal_setup.md` for personal API profile setup, HITL, Web, and safety defaults.
 
+- current high-confidence-scan slice
+  - Added `scripts.secret_scan` for automated high-confidence private-key, secret-token, and marker checks.
+  - `scripts/verify_delivery.py` now uses `sys.executable` and the Python scanner for reproducible local validation.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -163,11 +167,11 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `158 passed`
+- `161 passed`
 - `All checks passed!`
 - CLI smoke: `agent-harness run "say done" --profile config/personal-harness.yaml --trace .harness/runs/latest.jsonl`
 - CLI smoke: `agent-harness hitl list --store .harness/hitl/requests.json`
-- Secret/TODO scan found only documentation/test mentions of API key handling and fake test credentials; no real secret was identified.
+- Secret and marker scan found only documentation/test mentions of API key handling and fake test credentials; no real secret was identified.
 
 ## Remaining Product Work
 

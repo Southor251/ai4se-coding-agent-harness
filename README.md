@@ -62,7 +62,7 @@ python scripts/verify_delivery.py
 
 The final sandbox verification for this recovery pass was:
 
-- `158 passed`
+- `161 passed`
 - `All checks passed!`
 
 ## Run Demos

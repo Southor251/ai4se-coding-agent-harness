@@ -236,9 +236,10 @@ make web       # 启动 Agent Loop Theater
 - Streamlit HITL controls now support approve-and-continue for saved-context requests.
 - Streamlit can now select JSONL run history from `.harness/runs`.
 - Delivery verification script and personal setup guide are now available.
+- High-confidence secret and marker scan is included in delivery verification.
 - `run_shell` remains outside the default governed runtime tool registry.
-- Latest verification: `158 passed`, ruff passed, CLI run/list smoke passed.
-- Secret/TODO scan found only API-key documentation and fake test credential references.
+- Latest verification: `161 passed`, ruff passed, CLI run/list smoke passed.
+- Secret and marker scan found only API-key documentation and fake test credential references.
 
 The sandbox recovery pass implemented the deterministic harness kernel described in `docs/superpowers/plans/2026-07-07-harness-recovery-and-kernel-redesign.md`.
 

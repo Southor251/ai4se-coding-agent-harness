@@ -43,16 +43,9 @@ def build_checks() -> list[Check]:
         Check(
             "secret_scan",
             [
-                "rg",
-                "-n",
-                "key|private key|TODO|TBD|FIXME",
-                "src",
-                "tests",
-                "demo",
-                "README.md",
-                "PLAN.md",
-                "SPEC_PROCESS.md",
-                "AGENT_LOG.md",
+                sys.executable,
+                "-m",
+                "scripts.secret_scan",
             ],
         ),
     ]
@@ -64,7 +57,7 @@ def run_checks(checks: list[Check], dry_run: bool = False) -> int:
         if dry_run:
             continue
         result = subprocess.run(check.command)
-        if result.returncode != 0 and check.name != "secret_scan":
+        if result.returncode != 0:
             return result.returncode
     return 0
 
