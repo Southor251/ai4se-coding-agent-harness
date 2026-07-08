@@ -290,3 +290,10 @@ Remaining follow-up:
 - Updated `scripts/verify_delivery.py` so repeatable delivery checks use mock config rather than the real personal API profile.
 - Real read-only smoke succeeded with `halt_reason=done steps=2`.
 - Latest verification: `python scripts/verify_delivery.py` -> `168 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.
+
+## Streamlit Console UI Pass - 2026-07-09
+
+- Reworked Streamlit theater into a console layout with sidebar run controls, metric cards, and Run/Trace/HITL tabs.
+- Expanded trace display rows with tool name, HITL status, tool output/error, and final answer data.
+- Verified browser rendering at `http://127.0.0.1:8501` and fixed metric-card contrast after screenshot review.
+- Latest verification: `python scripts/verify_delivery.py` -> `169 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.

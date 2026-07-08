@@ -225,3 +225,25 @@ Observed result:
 - Verification after fixes:
   - targeted tests: `23 passed`
   - full delivery: `168 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.
+
+## 2026-07-09 Streamlit Console UI Pass
+
+- Reworked `agent_harness.web.theater` from a linear debug page into a clearer console layout:
+  - dark left sidebar for run configuration
+  - top metric strip for steps, tool calls, denials, feedback, and pending HITL
+  - tabs for Run, Trace, and HITL
+  - trace inspector with LLM output, action JSON, tool result, and final answer sections
+- Expanded `load_trace_for_display` to expose tool name, HITL status, tool success/output/error, and final answer fields for UI rendering.
+- Added regression coverage in `tests/test_theater.py` for tool detail rows.
+- Browser verification:
+  - opened `http://127.0.0.1:8501`
+  - confirmed title `Agent Harness Console`
+  - confirmed Run Control, metrics, Trace, and HITL sections render
+  - captured screenshots before and after contrast adjustment
+- Visual fix:
+  - first screenshot showed metric cards with low-contrast text
+  - updated CSS so metric labels and values render dark and readable
+- Verification:
+  - `python -m pytest -q tests/test_theater.py tests/test_web_services.py` -> `10 passed`
+  - `python -m ruff check src/agent_harness/web/theater.py tests/test_theater.py` -> `All checks passed!`
+  - `python scripts/verify_delivery.py` -> `169 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.

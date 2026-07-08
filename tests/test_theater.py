@@ -23,10 +23,41 @@ def test_load_trace_for_display(tmp_path):
             "step": 1,
             "llm": "done",
             "action": "done",
+            "tool": "",
             "permission": "allow",
+            "hitl": "",
+            "tool_success": "",
+            "tool_output": "",
+            "tool_error": "",
             "feedback": "",
+            "answer": "",
         }
     ]
+
+
+def test_load_trace_for_display_includes_tool_details(tmp_path):
+    trace_path = tmp_path / "trace.jsonl"
+    store = TraceStore(trace_path)
+    store.record(
+        TraceRecord(
+            step=1,
+            llm_text='{"type":"call_tool"}',
+            llm_action=AgentAction(
+                type="call_tool",
+                tool="read_file",
+                args={"path": "README.md"},
+            ),
+            permission_verdict="allow",
+            tool_result={"success": True, "output": "hello", "error": None},
+            hitl_status=None,
+        )
+    )
+
+    rows = load_trace_for_display(trace_path)
+
+    assert rows[0]["tool"] == "read_file"
+    assert rows[0]["tool_success"] is True
+    assert rows[0]["tool_output"] == "hello"
 
 
 def test_summarize_trace_counts_key_events():
