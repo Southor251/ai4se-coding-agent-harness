@@ -156,6 +156,9 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Added `scripts.secret_scan` for automated high-confidence private-key, secret-token, and marker checks.
   - `scripts/verify_delivery.py` now uses `sys.executable` and the Python scanner for reproducible local validation.
 
+- current final-status slice
+  - Added `docs/final_status.md` summarizing implemented capabilities, latest verification, remaining user-specific setup, and safety boundaries.
+
 ## Verification
 
 Latest verification in the sandbox:

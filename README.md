@@ -4,6 +4,8 @@ This repository contains a small, testable coding-agent harness kernel. It is de
 
 The current implementation focuses on deterministic orchestration around an injected LLM, tool registry, scope guard, permission policy, human-in-the-loop request manager, feedback sensor, and JSONL trace store. Tests use `MockLLM` and neutral policy fixtures so the core behavior is reproducible without network access or real credentials.
 
+See `docs/final_status.md` for the current delivery status and `docs/personal_setup.md` for personal API setup.
+
 ## What Works
 
 - Package import and editable install through `pyproject.toml`.
