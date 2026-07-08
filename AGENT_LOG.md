@@ -103,6 +103,11 @@ This log records the recovery work performed in the sandbox copy of the project.
   - Added `agent-harness hitl list|approve|deny`.
   - `approve_and_execute` now checks scope before executing approved actions.
 
+- current Web task/HITL slice
+  - Added `agent_harness.web.services` as a testable service layer for task runs, trace summary, and HITL list/approve/deny.
+  - Extended the Streamlit theater with goal/config/profile/trace inputs, run result display, trace summary, step inspection, and HITL approval controls.
+  - Kept Web logic on the same governed runtime and shared HITL store used by the CLI.
+
 ## Verification
 
 Latest verification in the sandbox:
@@ -114,12 +119,15 @@ python -m ruff check src/ tests/ demo/
 
 Observed result:
 
-- `134 passed`
+- `138 passed`
 - `All checks passed!`
+- CLI smoke: `agent-harness run "say done" --profile config/personal-harness.yaml --trace .harness/runs/latest.jsonl`
+- CLI smoke: `agent-harness hitl list --store .harness/hitl/requests.json`
+- Secret/TODO scan found only documentation/test mentions of API key handling and fake test credentials; no real secret was identified.
 
 ## Remaining Product Work
 
 - Implement real API-backed provider execution behind the working CLI runtime.
-- Replace the minimal Streamlit theater with a richer replay UI.
+- Improve the Streamlit theater styling and replay ergonomics.
 - Add real provider configuration and model selection once target provider/version requirements are fixed.
 - Expand personal-harness features such as persistent project memory, patch planning, and richer tool permissions.

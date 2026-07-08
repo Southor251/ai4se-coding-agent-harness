@@ -219,6 +219,17 @@ make web       # 启动 Agent Loop Theater
 5. **每完成一个 task**：PLAN.md 标记完成 + 附 commit hash + AGENT_LOG.md 记录。
 # Recovery Status - 2026-07-07
 
+## Implementation Status - 2026-07-08
+
+- Persistent HITL store is implemented in `agent_harness.hitl.store.HITLStore`.
+- CLI HITL commands are implemented: `agent-harness hitl list|approve|deny`.
+- HITL approval execution keeps scope enforcement before running stored actions.
+- Web task/HITL service helpers are implemented in `agent_harness.web.services`.
+- Streamlit theater can run a goal, show run/trace state, and list/approve/deny HITL requests against the same store.
+- `run_shell` remains outside the default governed runtime tool registry.
+- Latest verification: `138 passed`, ruff passed, CLI run/list smoke passed.
+- Secret/TODO scan found only API-key documentation and fake test credential references.
+
 The sandbox recovery pass implemented the deterministic harness kernel described in `docs/superpowers/plans/2026-07-07-harness-recovery-and-kernel-redesign.md`.
 
 Completed:

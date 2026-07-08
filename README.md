@@ -14,6 +14,7 @@ The current implementation focuses on deterministic orchestration around an inje
 - Human-in-the-loop request objects for ask-mode decisions.
 - Runtime config can load permission rules and create HITL requests for ask-mode tool actions.
 - HITL pending requests persist to `.harness/hitl/requests.json` and can be listed, approved, or denied through `agent-harness hitl`.
+- Streamlit theater can run a goal, show trace summaries, inspect step records, and approve or deny HITL requests through shared service helpers.
 - Optional project memory stores append-only notes under `.harness/memory/project.md`.
 - Feedback classification from tool results and feedback injection into the next loop context.
 - JSONL trace recording and loading.
@@ -23,7 +24,7 @@ The current implementation focuses on deterministic orchestration around an inje
 ## Known Limits
 
 - `agent-harness run`, `agent-harness demo`, and `agent-harness web` are minimal working local commands in this milestone. `run` uses the safe MockLLM runtime by default and can construct an OpenAI-compatible provider from config and credentials.
-- Real API-backed task execution now uses a strict JSON action protocol. The next milestone is richer governed tool execution and HITL approval flow for real task work.
+- Real API-backed task execution uses a strict JSON action protocol and the governed runtime. The remaining product work is richer task tooling and provider-specific hardening for personal use.
 - The shell tool is intentionally conservative in governed loop execution. With scope enabled and no explicit permission policy, `run_shell` is blocked by default.
 - This is not a complete OS sandbox. Scope and permission checks are harness-level guardrails.
 - Reflection content is scaffolded only; the student should complete `REFLECTION.md` personally.
@@ -54,7 +55,7 @@ python -m ruff check src/ tests/ demo/
 
 The final sandbox verification for this recovery pass was:
 
-- `134 passed`
+- `138 passed`
 - `All checks passed!`
 
 ## Run Demos
@@ -129,13 +130,13 @@ Invalid JSON or malformed actions are fed back into the loop as an invalid-actio
 
 ## Trace Theater
 
-Trace loading is implemented in `agent_harness.web.theater.load_trace_for_display`. Trace summary counts are available through `summarize_trace`.
+Trace loading is implemented in `agent_harness.web.theater.load_trace_for_display`. Trace summary counts are available through `summarize_trace`, and the Web service helpers in `agent_harness.web.services` expose task running plus HITL list/approve/deny operations.
 
 ```bash
 streamlit run src/agent_harness/web/theater.py
 ```
 
-`agent-harness run` writes a JSONL trace to `.harness/runs/latest.jsonl` by default. Pass `--trace <path>` to choose a different run record.
+The default Web inputs use `config/agent-harness.yaml`, `config/personal-harness.yaml`, `.harness/runs/latest.jsonl`, and `.harness/hitl/requests.json`. `agent-harness run` writes a JSONL trace to `.harness/runs/latest.jsonl` by default. Pass `--trace <path>` to choose a different run record.
 
 ## Docker
 
@@ -157,7 +158,7 @@ src/agent_harness/tools/       Tool base classes, registry, and built-ins
 src/agent_harness/config/      YAML config loader
 src/agent_harness/credentials/ Credential manager
 src/agent_harness/plugins/     Minimal plugin extension surface
-src/agent_harness/web/         Trace theater helpers
+src/agent_harness/web/         Trace theater and Web service helpers
 demo/                          Deterministic mechanism demos
 tests/                         Unit and integration tests
 docs/superpowers/              Recovery design and implementation plan
