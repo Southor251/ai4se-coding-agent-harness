@@ -5,8 +5,10 @@ from agent_harness.web.services import (
     approve_and_continue_hitl_request,
     approve_hitl_request,
     deny_hitl_request,
+    hitl_overview,
     list_hitl_requests,
     list_trace_runs,
+    trace_timeline,
     run_task,
     trace_summary,
 )
@@ -29,6 +31,29 @@ def test_trace_summary_reads_trace_file(tmp_path):
     summary = trace_summary(str(trace_path))
 
     assert summary["steps"] == 1
+
+
+def test_trace_timeline_marks_governance_states(tmp_path):
+    trace_path = tmp_path / "trace.jsonl"
+    run_task("say done", trace_path=str(trace_path))
+
+    rows = trace_timeline(str(trace_path))
+
+    assert rows[0]["step"] == 1
+    assert rows[0]["state"] in {"done", "tool", "blocked", "pending"}
+    assert "permission" in rows[0]
+
+
+def test_hitl_overview_counts_statuses(tmp_path):
+    store_path = tmp_path / "requests.json"
+    manager = HITLManager(store=HITLStore(store_path))
+    manager.create_request(AgentAction(type="call_tool", tool="write_file"), "review")
+
+    overview = hitl_overview(str(store_path))
+
+    assert overview["pending"] == 1
+    assert overview["approved"] == 0
+    assert overview["denied"] == 0
 
 
 def test_list_trace_runs_returns_jsonl_summaries(tmp_path):

@@ -33,6 +33,43 @@ def trace_summary(trace_path: str = DEFAULT_TRACE_PATH) -> dict:
     return summarize_trace(TraceStore.load(trace_path))
 
 
+def trace_timeline(trace_path: str = DEFAULT_TRACE_PATH) -> list[dict]:
+    rows = []
+    for record in TraceStore.load(trace_path):
+        action = record.get("llm_action") or {}
+        permission = record.get("permission_verdict", "")
+        hitl = record.get("hitl_status") or ""
+        action_type = action.get("type", "")
+        if hitl == "pending":
+            state = "pending"
+        elif permission == "deny":
+            state = "blocked"
+        elif action_type == "call_tool":
+            state = "tool"
+        elif action_type == "done":
+            state = "done"
+        else:
+            state = action_type or "unknown"
+        rows.append(
+            {
+                "step": record.get("step"),
+                "state": state,
+                "action": action_type,
+                "tool": action.get("tool") or "",
+                "permission": permission,
+                "hitl": hitl,
+            }
+        )
+    return rows
+
+
+def hitl_overview(store_path: str = DEFAULT_HITL_STORE_PATH) -> dict[str, int]:
+    counts = {"pending": 0, "approved": 0, "denied": 0, "timed_out": 0}
+    for request in HITLStore(store_path).load():
+        counts[request.status] = counts.get(request.status, 0) + 1
+    return counts
+
+
 def list_trace_runs(trace_dir: str = DEFAULT_TRACE_DIR) -> list[dict]:
     root = Path(trace_dir)
     if not root.exists():
