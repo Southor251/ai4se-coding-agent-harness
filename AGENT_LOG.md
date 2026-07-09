@@ -270,3 +270,15 @@ Observed result:
   - `.venv\Scripts\python.exe -m pytest -q tests/test_web_services.py tests/test_theater.py` -> `15 passed`
   - `.venv\Scripts\python.exe -m ruff check src\agent_harness\web tests\test_web_services.py tests\test_theater.py` -> `All checks passed!`
   - `.venv\Scripts\python.exe scripts\verify_delivery.py` -> `174 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.
+
+## 2026-07-09 Award UI Iteration Task 4
+
+- Added deterministic demo data generation in `agent_harness.web.demo_data.ensure_demo_trace`.
+- The demo writes `.harness/runs/demo-walkthrough.jsonl` and `.harness/hitl/demo-requests.json`, with a successful read step, a pending write approval step, and a final done step.
+- Streamlit sidebar now includes `Load demo walkthrough`, which creates the demo artifacts, stores the active trace/HITL paths in session state, and reruns the app.
+- Added `docs/demo_walkthrough.md` and linked it from `README.md`.
+- Browser verification confirmed the demo trace path, demo HITL store value, governance rail, pending state, and demo answer are visible after clicking the button.
+- Task 4 verification:
+  - `.venv\Scripts\python.exe -m pytest -q tests/test_web_demo_data.py tests/test_web_services.py tests/test_theater.py` -> `16 passed`
+  - `.venv\Scripts\python.exe -m ruff check src\agent_harness\web tests\test_web_demo_data.py tests\test_web_services.py tests\test_theater.py` -> `All checks passed!`
+  - `.venv\Scripts\python.exe scripts\verify_delivery.py` -> `175 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.

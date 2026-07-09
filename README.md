@@ -4,7 +4,7 @@ This repository contains a small, testable coding-agent harness kernel. It is de
 
 The current implementation focuses on deterministic orchestration around an injected LLM, tool registry, scope guard, permission policy, human-in-the-loop request manager, feedback sensor, and JSONL trace store. Tests use `MockLLM` and neutral policy fixtures so the core behavior is reproducible without network access or real credentials.
 
-See `docs/final_status.md` for the current delivery status and `docs/personal_setup.md` for personal API setup.
+See `docs/final_status.md` for the current delivery status, `docs/personal_setup.md` for personal API setup, and `docs/demo_walkthrough.md` for the judge-facing Web demo path.
 
 ## What Works
 
@@ -173,6 +173,8 @@ Start-Process -FilePath powershell.exe -ArgumentList @(
 Then open `http://127.0.0.1:8501`.
 
 The default Web inputs use `config/agent-harness.yaml`, `config/personal-harness.yaml`, `.harness/runs/latest.jsonl`, and `.harness/hitl/requests.json`. `agent-harness run` writes a JSONL trace to `.harness/runs/latest.jsonl` by default. Pass `--trace <path>` to choose a different run record.
+
+For a deterministic no-key demo, open the Web console and click `Load demo walkthrough`. It creates `.harness/runs/demo-walkthrough.jsonl` and `.harness/hitl/demo-requests.json`, then switches the console to that trace and HITL queue.
 
 ## Docker
 

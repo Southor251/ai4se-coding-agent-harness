@@ -59,6 +59,7 @@ def _to_dict(record: Any) -> dict:
 def main(path: str = ".harness/runs/latest.jsonl"):
     import streamlit as st
 
+    from agent_harness.web.demo_data import ensure_demo_trace
     from agent_harness.web.services import (
         DEFAULT_CONFIG_PATH,
         DEFAULT_HITL_STORE_PATH,
@@ -79,14 +80,22 @@ def main(path: str = ".harness/runs/latest.jsonl"):
 
     st.title("Agent Harness Console")
     st.caption("Run governed tasks, inspect trace records, and resolve human approval requests.")
+    active_trace_path = st.session_state.get("active_trace_path", path)
+    active_hitl_store_path = st.session_state.get("active_hitl_store_path", DEFAULT_HITL_STORE_PATH)
 
     with st.sidebar:
         st.header("Run Control")
+        if st.button("Load demo walkthrough", use_container_width=True):
+            demo = ensure_demo_trace(".harness/runs/demo-walkthrough.jsonl", ".harness/hitl/demo-requests.json")
+            st.session_state["active_trace_path"] = demo["trace_path"]
+            st.session_state["active_hitl_store_path"] = demo["store_path"]
+            st.session_state["demo_request_id"] = demo["request_id"]
+            st.rerun()
         goal = st.text_area("Goal", value="say done")
         config_path = st.text_input("Config path", value=DEFAULT_CONFIG_PATH)
         profile_path = st.text_input("Profile path", value=DEFAULT_PROFILE_PATH)
-        trace_path = st.text_input("Trace path", value=path)
-        hitl_store_path = st.text_input("HITL store", value=DEFAULT_HITL_STORE_PATH)
+        trace_path = st.text_input("Trace path", value=active_trace_path)
+        hitl_store_path = st.text_input("HITL store", value=active_hitl_store_path)
         trace_runs = list_trace_runs(DEFAULT_TRACE_DIR)
         if trace_runs:
             selected_trace = st.selectbox("Trace history", trace_runs, format_func=lambda row: row["name"])
