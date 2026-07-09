@@ -41,6 +41,15 @@ def summarize_trace(records: list[Any]) -> dict:
     }
 
 
+def status_tone(state: str) -> str:
+    return {
+        "pending": "review",
+        "blocked": "blocked",
+        "done": "done",
+        "tool": "tool",
+    }.get(state, "neutral")
+
+
 def _to_dict(record: Any) -> dict:
     if is_dataclass(record):
         return asdict(record)
@@ -61,6 +70,7 @@ def main(path: str = ".harness/runs/latest.jsonl"):
         list_hitl_requests,
         list_trace_runs,
         run_task,
+        trace_timeline,
     )
 
     st.set_page_config(page_title="Agent Harness Console", layout="wide")
@@ -120,6 +130,20 @@ def main(path: str = ".harness/runs/latest.jsonl"):
         if not rows:
             st.info("No trace records found.")
         else:
+            st.markdown("**Governance rail**")
+            for item in trace_timeline(trace_path):
+                tone = status_tone(item["state"])
+                label = item["tool"] or item["action"] or item["state"]
+                st.markdown(
+                    (
+                        f'<div class="rail-row rail-{tone}">'
+                        f'<strong>Step {item["step"]}</strong> · {item["state"]} · {label} '
+                        f'<span class="rail-meta">permission={item["permission"] or "-"} '
+                        f'hitl={item["hitl"] or "-"}</span>'
+                        "</div>"
+                    ),
+                    unsafe_allow_html=True,
+                )
             selected = st.slider("Step", 1, len(rows), len(rows))
             row = rows[selected - 1]
             left, right = st.columns([2, 1])
@@ -230,6 +254,25 @@ def _apply_console_style(st) -> None:
             border: 1px solid #dbe3dc;
             border-radius: 8px 8px 0 0;
             padding: 10px 14px;
+        }
+        .rail-row {
+            border-left: 4px solid #2B6CB0;
+            padding: 8px 10px;
+            margin: 6px 0;
+            background: #ffffff;
+            border-radius: 8px;
+            color: #17201b;
+            box-shadow: 0 1px 2px rgba(15, 42, 35, 0.06);
+        }
+        .rail-review { border-left-color: #B7791F; }
+        .rail-blocked { border-left-color: #C53030; }
+        .rail-done { border-left-color: #2F855A; }
+        .rail-tool { border-left-color: #2B6CB0; }
+        .rail-neutral { border-left-color: #718096; }
+        .rail-meta {
+            color: #58645f;
+            font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+            font-size: 0.86rem;
         }
         </style>
         """,

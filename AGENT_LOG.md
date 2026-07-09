@@ -247,3 +247,16 @@ Observed result:
   - `python -m pytest -q tests/test_theater.py tests/test_web_services.py` -> `10 passed`
   - `python -m ruff check src/agent_harness/web/theater.py tests/test_theater.py` -> `All checks passed!`
   - `python scripts/verify_delivery.py` -> `169 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.
+
+## 2026-07-09 Award UI Iteration Tasks 1-2
+
+- Task 1 added testable UI view models in `agent_harness.web.services`:
+  - `trace_timeline(path)` converts JSONL trace records into compact step/state/tool/permission/HITL rows.
+  - `hitl_overview(store_path)` summarizes pending, approved, denied, and timed-out approval requests.
+- Task 1 commit: `3b827ea feat: add ui trace view models`.
+- Task 2 added a governance rail to the Streamlit Trace tab and a small `status_tone()` mapping for stable visual states.
+- Browser verification at `http://127.0.0.1:8501` confirmed `Agent Harness Console`, `Trace inspector`, `Governance rail`, and 28 rendered rail rows.
+- Task 2 verification:
+  - `.venv\Scripts\python.exe -m pytest -q tests/test_theater.py tests/test_web_services.py` -> `13 passed`
+  - `.venv\Scripts\python.exe -m ruff check src\agent_harness\web tests\test_web_services.py tests\test_theater.py` -> `All checks passed!`
+  - `.venv\Scripts\python.exe scripts\verify_delivery.py` -> `172 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.

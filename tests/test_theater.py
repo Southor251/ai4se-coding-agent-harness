@@ -1,7 +1,7 @@
 from agent_harness.models import AgentAction, TraceRecord
 from agent_harness.models import Feedback
 from agent_harness.trace.store import TraceStore
-from agent_harness.web.theater import load_trace_for_display, summarize_trace
+from agent_harness.web.theater import load_trace_for_display, status_tone, summarize_trace
 
 
 def test_load_trace_for_display(tmp_path):
@@ -108,3 +108,11 @@ def test_summarize_trace_accepts_dataclass_records():
     assert summary["steps"] == 1
     assert summary["tool_calls"] == 1
     assert summary["feedback_events"] == 1
+
+
+def test_status_tone_maps_states():
+    assert status_tone("pending") == "review"
+    assert status_tone("blocked") == "blocked"
+    assert status_tone("done") == "done"
+    assert status_tone("tool") == "tool"
+    assert status_tone("unexpected") == "neutral"
