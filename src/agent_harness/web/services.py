@@ -104,6 +104,25 @@ def list_hitl_requests(store_path: str = DEFAULT_HITL_STORE_PATH) -> list[dict]:
     return rows
 
 
+def request_detail(store_path: str, request_id: str) -> dict:
+    for request in HITLStore(store_path).load():
+        if request.id == request_id:
+            return {
+                "id": request.id,
+                "status": request.status,
+                "reason": request.reason,
+                "action_type": request.action.type,
+                "tool": request.action.tool or "",
+                "args": request.action.args,
+                "step": request.step,
+                "context_items": len(request.context or []),
+                "created_at": request.created_at,
+                "resolved_at": request.resolved_at,
+                "decided_by": request.decided_by,
+            }
+    raise ValueError(f"HITL request not found: {request_id}")
+
+
 def approve_hitl_request(
     request_id: str,
     config_path: str = DEFAULT_CONFIG_PATH,

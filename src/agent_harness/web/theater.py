@@ -69,6 +69,7 @@ def main(path: str = ".harness/runs/latest.jsonl"):
         deny_hitl_request,
         list_hitl_requests,
         list_trace_runs,
+        request_detail,
         run_task,
         trace_timeline,
     )
@@ -177,10 +178,24 @@ def main(path: str = ".harness/runs/latest.jsonl"):
     with hitl_tab:
         st.subheader("Human approval queue")
         if requests:
+            requests = sorted(requests, key=lambda row: (row["status"] != "pending", row["created_at"]))
             st.dataframe(requests, use_container_width=True)
         else:
             st.info("No HITL requests found.")
-        request_id = st.text_input("Request id")
+        selected_request = None
+        if requests:
+            selected_request = st.selectbox(
+                "Pending request",
+                requests,
+                format_func=lambda row: f'{row["id"]} · {row["status"]} · {row["tool"]}',
+            )
+        default_request_id = selected_request["id"] if selected_request else ""
+        request_id = st.text_input("Request id (advanced)", value=default_request_id).strip()
+        if request_id:
+            try:
+                st.json(request_detail(hitl_store_path, request_id))
+            except ValueError as exc:
+                st.error(str(exc))
         approve_col, continue_col, deny_col = st.columns(3)
         with approve_col:
             if st.button("Approve", use_container_width=True) and request_id:

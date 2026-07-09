@@ -260,3 +260,13 @@ Observed result:
   - `.venv\Scripts\python.exe -m pytest -q tests/test_theater.py tests/test_web_services.py` -> `13 passed`
   - `.venv\Scripts\python.exe -m ruff check src\agent_harness\web tests\test_web_services.py tests\test_theater.py` -> `All checks passed!`
   - `.venv\Scripts\python.exe scripts\verify_delivery.py` -> `172 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.
+
+## 2026-07-09 Award UI Iteration Task 3
+
+- Added `request_detail(store_path, request_id)` to expose a single HITL request with action args, resume step, context item count, timestamps, and decision fields.
+- Streamlit HITL tab now sorts pending requests first, offers a request selector, keeps an advanced request-id input for copied ids, and renders the selected request JSON before approval.
+- Browser verification at `http://127.0.0.1:8501` confirmed `Pending request`, `Request id (advanced)`, request detail JSON, and `Approve + Continue` are visible after Streamlit rerun.
+- Task 3 verification:
+  - `.venv\Scripts\python.exe -m pytest -q tests/test_web_services.py tests/test_theater.py` -> `15 passed`
+  - `.venv\Scripts\python.exe -m ruff check src\agent_harness\web tests\test_web_services.py tests\test_theater.py` -> `All checks passed!`
+  - `.venv\Scripts\python.exe scripts\verify_delivery.py` -> `174 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.

@@ -8,6 +8,7 @@ from agent_harness.web.services import (
     hitl_overview,
     list_hitl_requests,
     list_trace_runs,
+    request_detail,
     trace_timeline,
     run_task,
     trace_summary,
@@ -81,6 +82,41 @@ def test_list_and_deny_hitl_requests(tmp_path):
     assert rows[0]["status"] == "pending"
     assert result.status == "denied"
     assert HITLStore(store_path).load()[0].status == "denied"
+
+
+def test_request_detail_returns_action_and_resume_fields(tmp_path):
+    store_path = tmp_path / "requests.json"
+    manager = HITLManager(store=HITLStore(store_path))
+    request = manager.create_request(
+        AgentAction(
+            type="call_tool",
+            tool="write_file",
+            args={"path": "note.txt", "content": "hello"},
+        ),
+        "review write",
+        context=[{"role": "user", "content": "write note"}],
+        step=3,
+    )
+
+    detail = request_detail(str(store_path), request.id)
+
+    assert detail["id"] == request.id
+    assert detail["status"] == "pending"
+    assert detail["tool"] == "write_file"
+    assert detail["args"]["path"] == "note.txt"
+    assert detail["context_items"] == 1
+    assert detail["step"] == 3
+
+
+def test_request_detail_rejects_unknown_id(tmp_path):
+    store_path = tmp_path / "requests.json"
+
+    try:
+        request_detail(str(store_path), "missing")
+    except ValueError as exc:
+        assert "HITL request not found" in str(exc)
+    else:
+        raise AssertionError("request_detail should reject unknown ids")
 
 
 def test_approve_hitl_request_executes_pending_action(tmp_path):
