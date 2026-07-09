@@ -176,6 +176,12 @@ The default Web inputs use `config/agent-harness.yaml`, `config/personal-harness
 
 For a deterministic no-key demo, open the Web console and click `Load demo walkthrough`. It creates `.harness/runs/demo-walkthrough.jsonl` and `.harness/hitl/demo-requests.json`, then switches the console to that trace and HITL queue.
 
+When the Web server is already running, use the UI smoke check:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\verify_web_ui.py --url http://127.0.0.1:8501
+```
+
 ## Docker
 
 Build and test in a container:

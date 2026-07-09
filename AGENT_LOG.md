@@ -282,3 +282,15 @@ Observed result:
   - `.venv\Scripts\python.exe -m pytest -q tests/test_web_demo_data.py tests/test_web_services.py tests/test_theater.py` -> `16 passed`
   - `.venv\Scripts\python.exe -m ruff check src\agent_harness\web tests\test_web_demo_data.py tests\test_web_services.py tests\test_theater.py` -> `All checks passed!`
   - `.venv\Scripts\python.exe scripts\verify_delivery.py` -> `175 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.
+
+## 2026-07-09 Award UI Iteration Task 5
+
+- Added `scripts/verify_web_ui.py` with a testable `validate_body()` function and a CLI HTTP smoke check for a running Web UI.
+- The script accepts Streamlit's raw app shell, because Streamlit renders most application text after the initial HTML load.
+- Added `tests/test_verify_web_ui.py` and README usage for `scripts\verify_web_ui.py --url http://127.0.0.1:8501`.
+- Browser screenshot smoke captured the current page and confirmed a non-empty PNG payload of 57,889 bytes.
+- Task 5 verification:
+  - `.venv\Scripts\python.exe -m pytest -q tests/test_verify_web_ui.py` -> `3 passed`
+  - `.venv\Scripts\python.exe -m ruff check scripts\verify_web_ui.py tests\test_verify_web_ui.py` -> `All checks passed!`
+  - `.venv\Scripts\python.exe scripts\verify_web_ui.py --url http://127.0.0.1:8501` -> `ok status=200`
+  - `.venv\Scripts\python.exe scripts\verify_delivery.py` -> `178 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.
