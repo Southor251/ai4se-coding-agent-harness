@@ -19,7 +19,7 @@ All six planned tasks were implemented in the sandbox copy with TDD-style red/gr
 | Task 3: HITL queue ergonomics | Complete | `99da14b feat: improve hitl queue ergonomics` |
 | Task 4: demo walkthrough | Complete | `17fe8f8 feat: add judge demo walkthrough` |
 | Task 5: Web UI smoke verifier | Complete | `6c39741 test: add web ui smoke verifier` |
-| Task 6: static HTML spike | Complete | `df91ba9 feat: add static console spike` |
+| Task 6: static HTML spike | Complete | `a911a9b feat: add static console spike` |
 
 Latest full verification after Task 6 implementation:
 
