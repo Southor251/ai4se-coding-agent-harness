@@ -60,14 +60,21 @@ The Dockerfile also provides a containerized verification path.
 - Web trace history is service-backed and can summarize JSONL runs without depending on Streamlit.
 - Delivery verification is now scripted, and personal API setup is documented in `docs/personal_setup.md`.
 - High-confidence secret and marker scanning is automated through `scripts.secret_scan`.
+- Award UI iteration added service-backed trace timeline and HITL overview view models before changing the Streamlit surface.
+- The Streamlit Trace tab now has a governance rail that visualizes model action, permission, tool/HITL state, and completion status.
+- HITL queue operations are more auditable through request selection and request-detail JSON before approval.
+- A deterministic no-key demo walkthrough can create a trace and HITL store for judges without invoking the real API.
+- Web UI smoke verification and browser screenshot checks are part of the UI delivery process.
+- A packaged static HTML console spike exists as a future frontend reference, while Streamlit remains the official runnable UI for this delivery.
 
 ## Evidence
 
 The implementation was developed with failing tests first for the behavioral fixes and then verified with the full suite.
 
-Latest observed results:
+Latest observed results after the award UI iteration:
 
-- `161 passed`
+- `180 passed`
 - `All checks passed!`
 - CLI smoke for `run` and `hitl list` passed.
-- Secret and marker scan produced only expected API-key documentation and fake test-token references.
+- High-confidence secret scan passed.
+- Wheel build passed and included the packaged static HTML/CSS/JS console spike.

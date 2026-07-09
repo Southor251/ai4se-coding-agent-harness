@@ -26,6 +26,9 @@ agent-harness = "agent_harness.cli.main:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+"agent_harness.server" = ["static/*"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py312"

@@ -182,6 +182,8 @@ When the Web server is already running, use the UI smoke check:
 .\.venv\Scripts\python.exe scripts\verify_web_ui.py --url http://127.0.0.1:8501
 ```
 
+A static HTML console spike is available under `src/agent_harness/server/static`; see `docs/static_html_spike.md`. It is a prototype reference, while Streamlit remains the official runnable Web UI for this delivery.
+
 ## Docker
 
 Build and test in a container:

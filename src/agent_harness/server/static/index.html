@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agent Harness Static Console</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <aside class="control">
+        <p class="eyebrow">Governed runtime</p>
+        <h1>Agent Harness Console</h1>
+        <label>
+          Goal
+          <textarea>Review README.md and summarize it.</textarea>
+        </label>
+        <button type="button">Run task</button>
+        <button type="button" class="secondary">Load demo walkthrough</button>
+      </aside>
+      <section class="workspace">
+        <header class="metrics" aria-label="Run metrics">
+          <article><span>Steps</span><strong id="steps">3</strong></article>
+          <article><span>Tool calls</span><strong>2</strong></article>
+          <article><span>Pending HITL</span><strong>1</strong></article>
+          <article><span>run_shell</span><strong>disabled</strong></article>
+        </header>
+        <section class="rail" aria-label="Governance rail">
+          <h2>Governance rail</h2>
+          <ol id="timeline"></ol>
+        </section>
+        <section class="hitl" aria-label="Human approval queue">
+          <h2>Human approval queue</h2>
+          <div id="hitl-list"></div>
+        </section>
+      </section>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

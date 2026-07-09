@@ -8,6 +8,29 @@
 
 **Tech Stack:** Python 3.12, Streamlit, pytest, ruff, existing harness modules, browser screenshot verification. Optional later stage: FastAPI + static HTML/CSS/JS, no React until the API contract is stable.
 
+## Execution Status - 2026-07-09
+
+All six planned tasks were implemented in the sandbox copy with TDD-style red/green checks, browser verification for visible UI changes, and per-slice commits.
+
+| Task | Status | Commit |
+| --- | --- | --- |
+| Task 1: UI view models | Complete | `3b827ea feat: add ui trace view models` |
+| Task 2: governance rail layout | Complete | `a7249d6 feat: add governance rail UI` |
+| Task 3: HITL queue ergonomics | Complete | `99da14b feat: improve hitl queue ergonomics` |
+| Task 4: demo walkthrough | Complete | `17fe8f8 feat: add judge demo walkthrough` |
+| Task 5: Web UI smoke verifier | Complete | `6c39741 test: add web ui smoke verifier` |
+| Task 6: static HTML spike | Complete | `df91ba9 feat: add static console spike` |
+
+Latest full verification after Task 6 implementation:
+
+- `.venv\Scripts\python.exe -m pytest -q ...` focused UI/server set -> `21 passed`
+- `.venv\Scripts\python.exe -m ruff check ...` -> `All checks passed!`
+- `.venv\Scripts\python.exe scripts\verify_delivery.py` -> `180 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed
+- `.venv\Scripts\python.exe -m pip wheel --no-deps --no-cache-dir . -w .harness\wheels` -> wheel built successfully
+- Wheel content check confirmed `agent_harness/server/static/index.html`, `styles.css`, and `app.js` are included
+
+Decision after Task 6: Streamlit remains the official runnable competition demo UI. The static HTML console is a packaged visual prototype and future API-contract target, not a replacement for the working governed Web console.
+
 ## Global Constraints
 
 - Work in `C:\Users\hp\Documents\Codex\2026-07-07\https-opncd-ai-share-1wbl482n\work\ai4se-coding-agent-harness`.

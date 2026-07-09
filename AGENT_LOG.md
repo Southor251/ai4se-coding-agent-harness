@@ -294,3 +294,17 @@ Observed result:
   - `.venv\Scripts\python.exe -m ruff check scripts\verify_web_ui.py tests\test_verify_web_ui.py` -> `All checks passed!`
   - `.venv\Scripts\python.exe scripts\verify_web_ui.py --url http://127.0.0.1:8501` -> `ok status=200`
   - `.venv\Scripts\python.exe scripts\verify_delivery.py` -> `178 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed.
+
+## 2026-07-09 Award UI Iteration Task 6
+
+- Added a controlled static console spike under `agent_harness.server` without adding FastAPI or replacing Streamlit.
+- Added `load_console_payload(trace_path, store_path)` and `static_app_available()` in `agent_harness.server.api`.
+- Added packaged static assets: `index.html`, `styles.css`, and `app.js`.
+- Added `docs/static_html_spike.md` with the decision that Streamlit remains the official runnable UI and the static console is a prototype reference.
+- Added package-data configuration so the static assets are included in built wheels.
+- Task 6 verification:
+  - `.venv\Scripts\python.exe -m pytest -q tests/test_server_api.py tests/test_web_demo_data.py tests/test_web_services.py tests/test_theater.py tests/test_verify_web_ui.py` -> `21 passed`
+  - `.venv\Scripts\python.exe -m ruff check ...` -> `All checks passed!`
+  - `.venv\Scripts\python.exe scripts\verify_delivery.py` -> `180 passed`, ruff passed, CLI run/list smoke passed, high-confidence secret scan passed
+  - `.venv\Scripts\python.exe -m pip wheel --no-deps --no-cache-dir . -w .harness\wheels` -> wheel built successfully
+  - Wheel content check confirmed `agent_harness/server/static/index.html`, `styles.css`, and `app.js`.
